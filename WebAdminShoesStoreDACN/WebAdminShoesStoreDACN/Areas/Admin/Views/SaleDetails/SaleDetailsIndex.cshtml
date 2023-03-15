@@ -1,0 +1,477 @@
+﻿
+@{
+    ViewBag.Title = "SaleDetailsIndex";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="card shadow mb-4">
+    <div class="card-header  py-3 bg-success">
+        <div class="row">
+            <h6 class="m-0 font-weight-bold text-danger col-md-2" style="text-transform:uppercase">Danh sách sản phẩm khuyến mãi</h6>
+            <div class="form-group col-md-2">
+                <p class="m-1" style="color:#000" id="lbSale1">Chương trình đang diễn ra</p>
+                <select class="form-control" id="headerSale1"></select>
+            </div>
+            <div class="form-group col-md-2">
+                <p class="m-1" style="color:#000" id="lbSale2">Chương trình sắp diễn ra</p>
+                <select class="form-control" id="headerSale2"></select>
+            </div>
+            <div class="form-group col-md-2">
+                <p class="m-1" style="color:#000" id="lbSale3">Chương trình đã kết thúc</p>
+                <select class="form-control" id="headerSale3"></select>
+            </div>
+           
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <nav aria-label="..." class="col-md-5">
+                <ul class="pagination pagination-sm" id="phanTrangSaleDetails"></ul>
+            </nav>
+            <div class=" text-right offset-5 mb-2  ">
+                <button class="btn  btn-success" id="btnAddSaleDetails" name="Add"><i class="fas fa-plus"></i> Thêm Mới</button>
+
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTableSaleDetails" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="col-md-1">Mã KM</th>
+                        <th class="col-md-1">Mã SP</th>
+                        <th class="col-md-2">Tên giày</th>
+                        <th class="col-md-1">Hình ảnh</th>
+                        <th class="col-md-1">Giá</th>
+                        <th class="col-md-1">Giá khuyến mãi</th>
+                        <th class="col-md-1">Phần trăm khuyến mãi </th>
+                        <th class="col-md-2"></th>
+                    </tr>
+                </thead>
+                <tbody id="tbDsSaleDetails">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="modal fade bd-example-modal-lg" id="modalShoesNotSale" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                
+                <h5 class="modal-title " style="color:#fff" id="modalTitle">Chi tiết đơn hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <nav aria-label="..." class="col-md-4">
+                        <ul class="pagination pagination-sm" id="phanTrangShoesNotSale"></ul>
+                    </nav>
+                    <div class=" offset-sm-4"></div>
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search col-md-3 ">
+                        <div class="input-group mb-2">
+                            <input type="text" class="form-control bg-white border-1 small" placeholder="Search for..."
+                                   aria-label="Search" aria-describedby="basic-addon2" id="txtSearchShoesNotSale">
+                            <div class="input-group-append">
+                                <button class="btn btn-success" type="button" id="btnSearchShoesNotSale">
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <input type="text" hidden id="ipSaleid" value="" />
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="dataTableShoesNotSale" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="col-md-1">Mã SP </th>
+                                <th class="col-md-2">Tên giày</th>
+                                <th class="col-md-2">Tên hãng</th>
+                                <th class="col-md-2">Tên DM</th>
+                                <th class="col-md-1">Hình ảnh</th>
+                                <th class="col-md-1">Giá</th>
+                                <th class="col-md-1 ">Sl tồn kho</th>
+                                <th class="col-md-1 ">SL đã bán</th>
+                                <th class="col-md-1 "></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbDsShoesNotSale">
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" id="btnSubmitShoesForSale" class="btn btn-success">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+
+    <script>
+        var search = "";
+        var page = 1;
+
+        let saleid = 0;
+        var trang1 = 1;
+        var keysearch1 = "";
+        $(document).ready(function () {
+            loadDSSale1(0);
+            loadDSSale2(1);
+            loadDSSale3(2);
+            $('#dataTableSaleDetails,#btnAddSaleDetails').hide();
+
+            $('#headerSale1,#headerSale2,#headerSale3').hide();
+        });
+
+
+        $('#btnSearchShoesNotSale').click(function () {
+            trang1 = 1;
+            keysearch1 = $('#txtSearchShoesNotSale').val();
+            $('#phanTrangShoesNotSale').empty();
+            GetAllShoesNotExistsInSaledetails(keysearch1, trang1);
+        });
+        $('#phanTrangShoesNotSale').on("click", "li", function (e) {
+            e.preventDefault();
+            trang1 = $(this).text();
+            GetAllShoesNotExistsInSaledetails(keysearch1, trang1);
+
+        });
+
+        $('#btnSubmitShoesForSale').click(function () {
+            let h = $('#ipSaleid').val();
+            
+            var arrShoes = new Array();
+            $('#tbDsShoesNotSale >tr').each(function (index, tr) {
+
+
+                if ($(this).find('input').is(":checked")) {
+                    let id = $(this).attr('id');
+                    arrShoes.push(id);
+
+
+                }
+
+            });
+            if (arrShoes.length === 0) {
+                alertify.error('Bạn chưa chọn sản phẩm nào!');
+                return;
+            } else {
+                $.ajax({
+                    url: '/Admin/SaleDetails/AddShoesForSaleDetails',
+                    type: 'post',
+                    data: {
+                        saleid: h,
+                        shoesid: arrShoes
+                    },
+                    success: function (data) {
+                        if (data.status == 200) {
+
+                            GetAllShoesNotExistsInSaledetails(keysearch1, trang1);
+                            LoadDSSaleDetailsBySaleId(search, page, saleid);
+                            alertify.success(data.Message);
+                        } else {
+                            alertify.error(data.Message);
+                            return;
+                        }
+
+                    }
+                });
+                
+            }
+            arrShoes = [];
+
+        });
+
+
+
+        $('#phanTrangSaleDetails').on("click", "li", function (e) {
+            e.preventDefault();
+            page = $(this).text();
+            LoadDSSaleDetailsBySaleId(search, page, saleid)
+        });
+        $('#lbSale1').click(function () {
+            $('#headerSale1').show();
+            $('#headerSale1').val('');
+            $('#dataTableSaleDetails,#btnAddSaleDetails').hide();
+            $('#headerSale2,#headerSale3').hide();
+
+        });
+        $('#lbSale2').click(function () {
+            $('#headerSale2').show();
+            $('#headerSale2').val('');
+            $('#dataTableSaleDetails,#btnAddSaleDetails').hide();
+            $('#headerSale1,#headerSale3').hide();
+
+        });
+        $('#lbSale3').click(function () {
+            $('#headerSale3').show();
+            $('#headerSale3').val('');
+            $('#dataTableSaleDetails,#btnAddSaleDetails').hide();
+            $('#headerSale1,#headerSale2').hide();
+
+        });
+        function loadDSSale1(typeS) {
+            $.ajax({
+                url: '/Admin/Sales/GetAllSaleForSaleDetails',
+                type: 'get',
+                data: {
+                    typeS: typeS
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        console.log(data.data);
+                        $.each(data.data, function (k, v) {
+                            let op = '<option value="' + v.saleid + '">' + v.salename + '</option>'
+                            $('#headerSale1').append(op);
+                        })
+                    }
+                }
+            });
+        };
+        function loadDSSale2(typeS) {
+            $.ajax({
+                url: '/Admin/Sales/GetAllSaleForSaleDetails',
+                type: 'get',
+                data: {
+                    typeS: typeS
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        console.log(data.data);
+                        $.each(data.data, function (k, v) {
+                            let op = '<option value="' + v.saleid + '">' + v.salename + '</option>'
+                            $('#headerSale2').append(op);
+                        })
+                    }
+                }
+            });
+        };
+        function loadDSSale3(typeS) {
+            $.ajax({
+                url: '/Admin/Sales/GetAllSaleForSaleDetails',
+                type: 'get',
+                data: {
+                    typeS: typeS
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        console.log(data.data);
+                        $.each(data.data, function (k, v) {
+                            let op = '<option value="' + v.saleid + '">' + v.salename + '</option>'
+                            $('#headerSale3').append(op);
+                        })
+                    }
+                }
+            });
+        };
+
+        $('#headerSale1').change(function () {
+            var optionSelected = $(this).find("option:selected");
+            saleid = optionSelected.val();
+            var page = 1;
+            $('#btnAddSaleDetails').show();
+
+            LoadDSSaleDetailsBySaleId(search, page, saleid);
+        });
+        $('#headerSale2').change(function () {
+            var optionSelected = $(this).find("option:selected");
+            saleid = optionSelected.val();
+            var page = 1;
+            LoadDSSaleDetailsBySaleId(search, page, saleid);
+            $('#btnAddSaleDetails').show();
+        });
+        $('#headerSale3').change(function () {
+            var optionSelected = $(this).find("option:selected");
+            saleid = optionSelected.val();
+            $('#btnAddSaleDetails').hide();
+            var page = 1;
+            LoadDSSaleDetailsBySaleId(search, page, saleid);
+        });
+
+        $(document).on('click', "button[name='DeleteSaleDetails']", function () {
+            let saleid1 = $(this).closest('tr').attr('id');
+            let shoeid = $(this).closest('tr').attr('class');
+            if (confirm('Bạn thực sự muốn xóa sản phẩm này khỏi chương trình khuyến mãi ?')) {
+                $.ajax({
+                    url: '/Admin/SaleDetails/DeleteSaleDetailsByShoesIdAndSaleid',
+                    type: 'post',
+
+                    data: {
+                        saleid: saleid1,
+                        shoeid: shoeid
+                    },
+
+                    success: function (data) {
+                        if (data.status == 200) {
+                            alertify.success(data.Message);
+                            LoadDSSaleDetailsBySaleId(search, 1, saleid)
+                        } else {
+                            alertify.error(data.Message);
+                            return;
+                        }
+                    },
+                    error: function () {
+                        alertify.error("Đã xảy ra lỗi trong quá trình xử lý, vui lòng thao tác lại!");
+                        return;
+                    }
+
+                })
+            } else {
+                return;
+            }
+
+
+
+        });
+
+        function LoadDSSaleDetailsBySaleId(search, page, saleid) {
+            $.ajax({
+                url: '/Admin/SaleDetails/GetSaleDetailsBySaleId',
+                type: 'get',
+                data: {
+                    keysearch: search,
+                    trang: page,
+                    saleid: saleid,
+
+
+                },
+                success: function (data) {
+                    console.log(data);
+
+                    if (data.status == 200) {
+                        $('#dataTableSaleDetails').show();
+                        $('#tbDsSaleDetails').empty();
+                        $('#phanTrangSaleDetails').empty();
+                        $.each(data.data, function (k, v) {
+                            let tr = '<tr id="' + v.saleid + '" class="' + v.shoeid +'">';
+                            tr += '<td class="col-md-1 text-center">' + (v.saleid) + '</td>';
+                            tr += '<td class="col-md-1">' + v.shoeid + '</td>';
+                            tr += '<td class="col-md-2">' + v.shoename + '</td>';
+                            tr += '<td class=" col-md-1"><img src="' + v.image1 + '"class="col-md-12 mt-2"  /></td>';
+                            tr += '<td class=" col-md-1">' + v.price + '</td>';
+                            tr += '<td class=" col-md-1">' + v.saleprice + '</td>';
+                            tr += '<td class=" col-md-1">' + v.percent + '<span > %</span></td>';
+                            tr += '<td class="col-md-2 text-center ">'
+                            if (v.active == true) {
+                                tr += '<button class="btn btn-xs btn-info ViewSaleDetails" name="ViewSaleDetails" ><i class="fa fa-info-circle" aria-hidden="true"></i></button>'
+                                @* tr += '&nbsp<button class="btn btn-xs btn-warning" name="EditSaleDetails" ><i class="fa fa-edit"></i></button>' *@
+                                tr += '&nbsp<button class="btn btn-xs btn-danger DeleteSaleDetails" name="DeleteSaleDetails" ><i class="fa fa-trash" aria-hidden="true"></i></button>'
+                            }
+                            
+                            tr += '</td>';
+
+                            tr += '</tr>';
+
+                            $('#tbDsSaleDetails').append(tr);
+
+                        });
+
+                        if (data.numPages > 1) {
+                            $('#phanTrangSaleDetails').empty();
+                            for (i = 1; i <= data.numPages; i++) {
+                                let li = '<li class="page-item" id="' + i + '" ><a class="page-link" href="#">' + i + '</a></li>'
+                                $('#phanTrangSaleDetails').append(li);
+                            }
+                            let li = $('#phanTrangSaleDetails li#' + page + '');
+                            console.log('li duoc click', $(li).text());
+                            $(li).addClass('active');
+
+
+                        }
+                    } else {
+                        $('#dataTableSaleDetails').hide();                        
+                        alertify.error(data.Message);
+                        $('#tbDsSaleDetails').empty();
+
+                        $('#phanTrangSaleDetails').empty();
+
+
+                    }
+
+                }
+
+            });
+        };
+        function GetAllShoesNotExistsInSaledetails(keysearch1, trang1) {
+            $.ajax({
+                url: '/Admin/SaleDetails/GetAllShoesNotExistsInSaledetails',
+                type: 'get',
+                data: {
+                    keysearch1: keysearch1,
+                    trang1: trang1,
+                },
+                success: function (data) {
+
+                    if (data.status == 200) {
+                        console.log(data);
+                        $('#tbDsShoesNotSale').empty();
+                        $.each(data.data, function (k, v) {
+                            let tr = '<tr id="' + v.shoeid + '">';
+                            tr += '<td class="col-md-1 text-center">' + v.shoeid + '</td>';
+                            tr += '<td class="col-md-2 text-center">' + v.shoename + '</td>';
+                            tr += '<td class="col-md-2">' + v.brandname + '</td>';
+                            tr += '<td class="col-md-2">' + v.categoryname + '</td>';
+                            tr += '<td class=" col-md-1"><img src="' + v.image1 + '"class="col-md-12 mt-2"  /></td>';
+                            tr += '<td class=" col-md-1">' + v.price + '</td>';
+                            tr += '<td class=" col-md-1">' + v.stock + '</td>';
+                            tr += '<td class=" col-md-1">' + v.purchased + '</td>';
+                            tr += '<td class="col-md-1 text-center ">'
+                            tr += '<input type="checkbox"/>'
+                            tr += '</td>';
+
+                            tr += '</tr>';
+
+                            $('#tbDsShoesNotSale').append(tr);
+
+                        });
+
+                        if (data.numPages > 1) {
+                            $('#phanTrangShoesNotSale').empty();
+                            for (i = 1; i <= data.numPages; i++) {
+                                let li = '<li class="page-item" id="' + i + '" ><a class="page-link" href="#">' + i + '</a></li>'
+                                $('#phanTrangShoesNotSale').append(li);
+                            }
+                            let li = $('#phanTrangShoesNotSale li#' + trang1 + '');
+                            console.log('li duoc click', $(li).text());
+                            $(li).addClass('active');
+
+
+                        }
+                    } else {
+                        if (keysearch1.length > 0) {
+                            alertify.warning('Không có kết quả nào phù hợp với từ khóa "' + keysearch1 + '"');
+                        } else {
+                            alertify.error(data.Message);
+                        }
+                        $('#tbDsShoesNotSale').empty();
+
+                        $('#phanTrangShoesNotSale').empty();
+
+
+                    }
+
+                }
+
+            });
+        };
+        $('#btnAddSaleDetails').click(function () {
+            $('#ipSaleid').val(saleid);
+
+            GetAllShoesNotExistsInSaledetails(keysearch1, trang1);
+            $('#modalTitle').text('Sản phẩm chưa khuyến mãi');
+            $('#modalShoesNotSale').modal();
+
+        });
+      
+    </script>
+}
+

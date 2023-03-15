@@ -1,0 +1,612 @@
+﻿
+@{
+    ViewBag.Title = "SalesIndex";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="card shadow mb-4">
+    <div class="card-header  py-3 bg-success">
+        <div class="row">
+            <h6 class="m-0 font-weight-bold text-danger col-md-2" style="text-transform:uppercase">Danh sách chương trình khuyến mãi</h6>
+            <div class="form-group col-md-3">
+                <select class="form-control" id="headerSale">
+                    <option value="0">Tất cả chương trình khuyến mãi</option>
+                    <option value="1">Chương trình khuyễn mãi đang diễn ra</option>
+                    <option value="2">Chương trình khuyễn mãi chưa bắt đầu</option>
+                    <option value="3">Chương trình khuyến mãi đã kết thúc</option>
+                </select>
+            </div>
+            <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search col-md-2 ">
+                <div class="input-group">
+                    <input type="text" class="form-control bg-white border-0 small" placeholder="Search for..."
+                           aria-label="Search" aria-describedby="basic-addon2" id="txtSearchSale">
+                    <div class="input-group-append">
+                        <button class="btn btn-success" type="button" id="btnSearchSale">
+                            <i class="fas fa-search fa-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <nav aria-label="..." class="col-md-5">
+                <ul class="pagination pagination-sm" id="phanTrangSale"></ul>
+            </nav>
+            <div class=" text-right offset-5 mb-2  ">
+                <button class="btn  btn-success" id="btnAddSale" name="Add"><i class="fas fa-plus"></i> Thêm Mới</button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTableSale" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="col-md-1">Mã KM</th>
+                        <th class="col-md-2">Tên chương trình</th>
+                        <th class="col-md-1">Ngày bắt đầu</th>
+                        <th class="col-md-1">Ngầy kết thúc</th>
+                        <th class="col-md-3">Nội dung chương trình</th>
+                        <th class="col-md-1">Phần trăm KM (%)</th>
+                        <th class="col-md-1">Banner chương trình</th>
+                        <th class="col-md-2"></th>
+                    </tr>
+                </thead>
+                <tbody id="tbDsSale">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="modalSale" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h5 class="modal-title " style="color:#fff" id="modalTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" hidden id="ipSale" value="" />
+                <form id="form-sale">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label id="lbSaleId">Mã KM</label>
+                            <input type="text" class="form-control" id="saleId" placeholder="Mã sản phẩm">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label>Tên chương trình khuyến mãi</label>
+                            <input type="text" class="form-control" id="saleName" placeholder="Tên chương trình khuyến mãi" name="salename">
+
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label id="lbpercent">Phần trăm khuyến mãi</label>
+                            <input type="number" class="form-control" id="percent" placeholder="Phần trăm khuyến mãi" name="percent">
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label id="lbstartday">Ngày bắt đầu</label>
+                            <div class="input-group date" data-provide="datepicker">
+                                <input type="text" class="form-control" id="startDay">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label id="lbendday">Ngày kết thúc</label>
+                            <div class="input-group date" data-provide="datepicker">
+                                <input type="text" class="form-control" id="endday">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label id="lbcontent">Nội dung CT khuyến mãi</label>
+                            <textarea class="form-control" id="Content" placeholder="Nội dung CT khuyến mãi" name="content"></textarea>
+
+                        </div>
+                    </div>
+                    <div class="row" id="form-create-update">
+                        <div class="form-group col-md-4">
+                            <label id="lbcreateday">Ngày tạo</label>
+                            <input type="text" class="form-control" id="createDay" placeholder="">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label id="lbCreateBy">Người tạo</label>
+                            <input type="text" class="form-control" id="createby" placeholder="">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label id="lbUpdateDate">Người sửa</label>
+                            <input type="text" class="form-control" id="updateby" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Banner chương trình</label>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="button" id="btnUploadBanner" value="Chọn ảnh banner" class="btn btn-success " />
+                                <input type="text" class="form-control" id="Banner" hidden>
+                                <input type="file" name="fileUpload" id="fileUploadBanner" accept="image/*" style="display:none;" />
+                                <img src="" id="pictureUploadBanner" class="col-md-12 mt-2" />
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" id="btnSubmitSale" class="btn btn-success">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <link href="~/Areas/Admin/ContentAdmin/datepicker/css/bootstrap-datepicker.css" rel="stylesheet" />
+
+    <script src="~/Areas/Admin/ContentAdmin/datepicker/js/bootstrap-datepicker.js"></script>
+    <script>
+        var search = "";
+        var page = 1;
+        var msg = "";
+        var u = 0;
+        let statusSale = 0;
+        $(document).ready(function () {
+            LoadDSSale(search, page, 0);
+            ChiTietSale(1);
+
+
+           @* loadDSBrand();
+            LoadDSShoes(search, page, 0);
+
+            loadDScategory('');*@
+        });
+        var t = $('#form-sale').validate({
+            rules: {
+                'salename': {
+                    required: true,
+                    maxlength:120
+                }, 'percent': {
+                    required: true,
+                    min: 0,
+                    max: 99.99,
+                    number: true
+
+                },'content': {
+                    required: true,
+                    maxlength:300
+
+                },
+            }, messages: {
+                'salename': {
+                    required: 'Bạn chưa nhập tên chương trình khuyến mãi',
+                    maxlength: 'Tên chương trình tối đa 120 ký tự.'
+                }, 'percent': {
+                    required: 'Bạn chưa nhập phần trăm khuyến mãi',
+                    min: 'Phần trăm khuyến mãi > 0%',
+                    max: 'Phần trăm khuyến mãi <=99.99%',
+                    number: 'Phần trăm khuyến mãi phải là số',
+
+                }, 'content': {
+                    required: 'Bạn chưa nhập nội dung chương trình khuyến mãi',
+                    maxlength: 'Nội dung chương trình tối đa 300 ký tự.'
+                }
+
+            }
+        });
+        $('.datepicker').datepicker();
+        $('#headerSale').change(function () {
+            var optionSelected = $(this).find("option:selected");
+            statusSale = optionSelected.val();
+            var page = 1;
+            LoadDSSale(search, page, statusSale);
+        });
+
+        $('#btnSearchSale').click(function () {
+            page = 1;
+            search = $('#txtSearchSale').val();
+            $('#phanTrangSale').empty();
+            LoadDSSale(search, page, statusSale);
+        });
+        $('#phanTrangSale').on("click", "li", function (e) {
+            e.preventDefault();
+            page = $(this).text();
+            LoadDSSale(search, page, statusSale);
+        });
+        function LoadDSSale(search, page, statusSale) {
+            $.ajax({
+                url: '/Admin/Sales/GetAllSale',
+                type: 'get',
+                data: {
+                    keysearch: search,
+                    trang: page,
+                    statusSale: statusSale,
+
+
+                },
+                success: function (data) {
+                    console.log(data);
+
+                    if (data.status == 200) {
+                        $('#tbDsSale').empty();
+                        $('#phanTrangSale').empty();
+
+                        $.each(data.data, function (k, v) {
+                            let tr = '<tr id="' + v.saleid + '">';
+                            tr += '<td class="col-md-1 text-center">' + (v.saleid) + '</td>';
+                            tr += '<td class="col-md-2">' + v.salename + '</td>';
+                            tr += '<td class="col-md-1">' + ConvertJsonDateString(v.startday) + '</td>';
+                            tr += '<td class=" col-md-1">' + ConvertJsonDateString(v.endday) + '</td>';
+                            tr += '<td class=" col-md-3">' + v.content + '</td>';
+                            tr += '<td class=" col-md-1">' + v.percent + '<span > %</span></td>';
+                            tr += '<td class=" col-md-1"><img src="' + v.imgsale + '"class="col-md-12 mt-2"  /></td>';
+
+
+                            tr += '<td class="col-md-2 text-center ">'
+
+
+                            tr += '<button class="btn btn-xs btn-info" name="ViewSale" ><i class="fa fa-info-circle" aria-hidden="true"></i></button>'
+                            tr += '&nbsp<button class="btn btn-xs btn-warning" name="EditSale" ><i class="fa fa-edit"></i></button>'
+                            tr += '</td>';
+
+                            tr += '</tr>';
+
+                            $('#tbDsSale').append(tr);
+
+                        });
+
+                        if (data.numPages > 1) {
+                            $('#phanTrangSale').empty();
+                            for (i = 1; i <= data.numPages; i++) {
+                                let li = '<li class="page-item" id="' + i + '" ><a class="page-link" href="#">' + i + '</a></li>'
+                                $('#phanTrangSale').append(li);
+                            }
+                            let li = $('#phanTrangSale li#' + page + '');
+                            console.log('li duoc click', $(li).text());
+                            $(li).addClass('active');
+
+
+                        }
+                    } else {
+                        if (search.length > 0) {
+                            alertify.error('Không có kết quả nào cho từ khóa "' + search + '"');
+                        } else {
+                            alertify.error(data.Message);
+                        }
+
+                        $('#tbDsSale').empty();
+
+                        $('#phanTrangSale').empty();
+
+
+                    }
+
+                }
+
+            });
+        }
+
+        function ChiTietSale(saleid) {
+            $.ajax({
+                url: '/Admin/Sales/GetShoesByShoesId',
+                type: 'get',
+                data: {
+                    saleid: saleid
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        console.log(data);
+                        $('#saleId').val(data.data.saleid);
+                        $('#saleName').val(data.data.salename);
+                        $('#percent').val(data.data.percent);
+                        $('#startDay').val(ConvertJsonDateString(data.data.startday));
+                        $('#endday').val(ConvertJsonDateString(data.data.endday));
+                        $('#Content').val(data.data.content);
+                        $('#createDay').val(ConvertJsonDateString(data.data.createdate));
+                        $('#createby').val(data.data.createByA);
+                        $('#updateby').val(data.data.updateByA);
+                        $('#pictureUploadBanner').show();
+                        $('#pictureUploadBanner').attr('src', data.data.imgsale);
+                        $('#Banner').val(data.data.imgsale);
+
+                    } else {
+                        alertify.error(data.Message);
+                    }
+                }
+            })
+        };
+        $(document).on('click', "button[name='ViewSale']", function () {
+            let saleid = $(this).closest('tr').attr('id');
+            ChiTietSale(saleid)
+            $('#btnSubmitSale,#btnUploadBanner,#endday,#startDay').prop('disabled', true);
+            $('#saleId,#saleName,#percent,#Content,#createDay,#createby,#updateby,#Banner').prop('readonly', true);
+            $('#saleId,#saleName,#percent,#Content,#createDay,#createby,#updateby,#Banner ,#lbSaleId,#lbpercent,#lbstartday,#lbendday,#lbcontent,#lbcreateday,#lbCreateBy,#lbUpdateDate').show();
+
+            $('#btnUploadBanner,#btnSubmitSale').hide();
+            $('#form-create-update').show();
+            $('#modalTitle').text('Xem chi tiết chương trình');
+            $('#modalSale').modal();
+
+
+        });
+
+
+        $(document).on('click', "button[name='EditSale']", function () {
+            let saleid = $(this).closest('tr').attr('id');
+            ChiTietSale(saleid)
+            $('#ipSale').val(saleid);
+            $('#btnSubmitSale,#btnUploadBanner,#endday,#startDay').prop('disabled', false);
+
+            $('#saleName,#percent,#Content,#createDay,#createby,#updateby,#Banner').prop('readonly', false);
+            $('#saleId,#createDay,#createby,#updateby').prop('readonly', true);
+
+            $('#form-create-update').show();
+
+
+            $('#lbSaleId,#saleId,#btnSubmitSale,#btnUploadBanner').show();
+
+
+            $('#modalTitle').text('Sửa chương trình khuyến mãi');
+            t.resetForm();
+            $('#modalSale').modal();
+
+
+
+        });
+
+
+        $('#btnAddSale').click(function () {
+            $('#saleId,#lbSaleId, #form-create-update,#pictureUploadBanner').hide();
+            $('#btnSubmitSale,#btnUploadBanner,#endday,#startDay').prop('disabled', false);
+            $('#saleName,#percent,#Content,#createDay,#createby,#updateby,#Banner').prop('readonly', false);
+            $('#saleName,#percent,#Content,#createDay,#createby,#updateby,#Banner,#endday,#startDay,#ipSale').val('');
+            $('#btnSubmitSale,#btnUploadBanner').show();
+            $('#pictureUploadBanner').attr('src', "");
+
+            $('#modalTitle').text('Thêm chương trình khuyến mãi');
+            t.resetForm();
+            $('#modalSale').modal();
+
+        });
+        $('#btnSubmitSale').click(function () {
+
+            let saleid = $('#saleId').val();
+            let salename = $('#saleName').val().trim();
+            let startday = $('#startDay').val();
+            let endday = $('#endday').val();
+            let content = $('#Content').val().trim();
+            let percent = $('#percent').val();
+            let imgsale = $('#Banner').val().trim() == null ? null : $('#Banner').val().trim().length < 1 ? null : $('#Banner').val().trim();
+
+
+            let ID = $('#ipSale').val().trim();
+            if (ID.length == 0) {
+                $.ajax({
+                    url: '/Admin/Sales/AddSale',
+                    type: 'post',
+                    data: {
+                        salename: salename,
+                        startday: startday,
+                        endday: endday,
+                        content: content,
+                        percent: percent,
+                        imgsale: imgsale,
+
+
+                    },
+
+                    success: function (data) {
+                        if (data.status == 200) {
+
+                            LoadDSSale(search, page, statusSale);
+                            alertify.success(data.Message);
+                            $('#pictureUploadBanner').attr('src', "");
+                            $('#pictureUploadBanner').hide();
+                            $('#saleName,#percent,#Content,#createDay,#createby,#updateby,#Banner,#endday,#startDay,#ipSale').val('');
+
+                        } else {
+                            alertify.error(data.Message);
+
+                            return;
+                        }
+                    },
+                    error: function () {
+                        alertify.error(data.Message);
+                        return;
+                    }
+
+                })
+
+            } else {
+
+                if (confirm('Bạn thực sự muốn chỉnh sửa chương trình khuyến mãi này?')) {
+                    $.ajax({
+                        url: '/Admin/Sales/EditSale',
+                        type: 'post',
+
+                        data: {
+                            saleid: saleid,
+                            salename: salename,
+                            startday: startday,
+                            endday: endday,
+                            content: content,
+                            percent: percent,
+                            imgsale: imgsale
+                        },
+
+                        success: function (data) {
+                            if (data.status == 200) {
+
+                                $('#modalSale').modal('hide');
+                                alertify.success(data.Message);
+                                LoadDSSale(search, page, statusSale);
+                            } else {
+                                alertify.error(data.Message);
+                                return;
+                            }
+                        },
+                        error: function () {
+                            alertify.error(data.Message);
+                            return;
+                        }
+
+                    })
+                } else {
+                    return;
+                }
+
+            }
+
+
+        });
+
+
+        @* function loadDSBrand() {
+            $.ajax({
+                url: '/Admin/Brands/GetAllBrand',
+                type: 'get',
+                success: function (data) {
+                    if (data.status == 200) {
+                        console.log(data.data);
+                        $.each(data.data, function (k, v) {
+                            let op = '<option value="' + v.brandid + '">' + v.brandname + '</option>'
+                            $('#brandid').append(op);
+                            $('#headerbrandid').append(op);
+                        })
+                    }
+                }
+            });
+        };*@
+        @* function loadDScategory(search) {
+            $.ajax({
+                url: '/Admin/Categorys/GetAllCategory',
+                type: 'get',
+                data: {
+                    keysearch: search,
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        console.log(data.data);
+                        $.each(data.data, function (k, v) {
+                            let op = '<option value="' + v.categoryid + '">' + v.categoryname + '</option>'
+                            $('#categoryId').append(op);
+                        })
+                    }
+                }
+            });
+        };
+*@
+@*
+
+
+
+
+
+
+
+        $(document).on('click', "button[name='EditShoes']", function () {
+            let idShoes = $(this).closest('tr').attr('id');
+            ChiTietShoes(idShoes);
+
+            $('#brandid,#categoryId,#statusShoes,#shoesNew,#btnUpload1,#btnUpload2,#btnUpload3,#btnUpload4,#btnSubmitShoes').prop('disabled', false);
+            $('#shoesName,#price,#description,#stock,#purchased,#img1,#img2,#img3,#img4').prop('readonly', false);
+            $('#shoesId').prop('readonly', true);
+            $('#createDate,#updateDate,#createby,#updateby,#lbCreateDate,#lbUpdateDate,#lbCreateDate,#lbUpdateDate,#purchased,#stock,#lbpurchased,#lbStock').hide();
+            $('#ipShoes').val(idShoes);
+
+            $('#btnDisable,#btnSubmit,#lbShoesId,#shoesId,#btnSubmitShoes').show();
+
+
+            $('#modalTitle').text('Sửa sản phẩm');
+            $('#modalShoes').modal();
+
+
+        });*@
+
+
+
+
+
+        function ConvertJsonDateString(jsonDate) {
+            var shortDate = null;
+            if (jsonDate) {
+                var regex = /-?\d+/;
+                var matches = regex.exec(jsonDate);
+                var dt = new Date(parseInt(matches[0]));
+                var month = dt.getMonth() + 1;
+                var monthString = month > 9 ? month : '0' + month;
+                var day = dt.getDate();
+                var dayString = day > 9 ? day : '0' + day;
+                var year = dt.getFullYear();
+                shortDate = monthString + '/' + dayString + '/' + year;
+                //shortDate = dayString + '/' + monthString + '/' + year;
+            }
+            return shortDate;
+        };
+        $('#btnUploadBanner').click(function () {
+            $('#pictureUploadBanner').attr('src', "");
+            $('#fileUploadBanner').trigger('click');
+        });
+
+        $('#fileUploadBanner').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUploadBanner').get(0);
+
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
+
+                $.ajax(
+                    {
+                        type: 'post',
+                        url: '/Admin/Shoes/ProcessUpload',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (data) {
+                            if (data.status == 200) {
+                                $('#pictureUploadBanner').attr('src', data.data);
+                                $('#pictureUploadBanner').show();
+                                $('#Banner').val(data.data);
+                                alertify.success('Upload thành công');
+                            } else {
+                                alertify.error(data.Message);
+                            }
+                        },
+                        error: function (err) {
+                            alertify.error('Đã xảy ra lỗi, vui lòng thử lại');
+
+                        }
+                    });
+            }
+        });
+
+        @* $('#txtSearch').on('keypress', function (e) {
+            if (e.which == 13) {
+                $('#btnSearch').click();
+
+
+                $('#txtSearch').val(search);
+            }
+        });*@
+        @* window.location.href = '@Url.Action("hihi", "Accounts")' *@
+    </script>
+}
+

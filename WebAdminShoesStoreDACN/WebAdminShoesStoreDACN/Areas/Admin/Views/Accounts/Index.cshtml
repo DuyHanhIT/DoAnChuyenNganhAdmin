@@ -1,0 +1,539 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header  py-3 bg-success">
+
+        <div class="row">
+            <h6 class="m-0 font-weight-bold text-danger col-md-3" style="text-transform:uppercase">Danh sách tài khoản</h6>
+
+            <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search col-md-3 ">
+
+                <div class="input-group">
+                    <input type="text" class="form-control bg-white border-0 small" placeholder="Search for..."
+                           aria-label="Search" aria-describedby="basic-addon2" id="txtSearch">
+                    <div class="input-group-append">
+                        <button class="btn btn-success" type="button" id="btnSearch">
+                            <i class="fas fa-search fa-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <nav aria-label="..." class="col-md-5">
+                <ul class="pagination pagination-sm" id="phanTrang">
+                </ul>
+            </nav>
+            <div class=" text-right offset-5 mb-2  ">
+                <button class="btn  btn-success" id="btnAdd" name="Add"><i class="fas fa-plus"></i> Thêm Mới</button>
+            </div>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="col-md-1">AccountId</th>
+                        <th class="col-md-2">UserName</th>
+                        <th class="col-md-2">RoleName</th>
+                        <th class="col-md-2">CreateDate</th>
+                        <th class="col-md-2">Status</th>
+                        <th class="col-md-3"></th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>AccountId</th>
+                        <th>UserName</th>
+                        <th>RoleName</th>
+                        <th>CreateDate</th>
+                        <th>Status</th>
+                        <th></th>
+
+                    </tr>
+                </tfoot>
+                <tbody id="tbDSAccount">
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalAccount" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h5 class="modal-title " style="color:#fff" id="modalTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" hidden id="ipAccount" value="" />
+
+
+                <form id="form-account">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label id="lbAccountID">Mã tài khoản</label>
+                            <input type="text" class="form-control" id="accountID" aria-describedby="emailHelp" placeholder="Mã tài khoản">
+
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label id="lbcreateDate">Ngày tạo</label>
+                            <input type="text" class="form-control" id="createDate" placeholder="Ngày tạo">
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" id="username" aria-describedby="emailHelp" placeholder="Email" name="email">
+                        <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label>Phân quyền</label>
+                            <select class="form-control" id="roleid" name="roleid">
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label id="lbstatus">Trạng thái tài khoản</label>
+                            <select class="form-control" id="status">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+                        </div>
+
+
+                    </div>
+
+                </form>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnReset" class="btn btn-warning">Reset Pass</button>
+                <button type="button" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" id="btnSubmit" class="btn btn-success">Save changes</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        var search = "";
+        var page = 1;
+        var msg = "";
+        $(document).ready(function () {
+            LoadDSAccount(search, page);
+            loadDSRoles('');
+
+
+        });
+
+        var t = $('#form-account').validate({
+            rules: {
+                'email': {
+                    required: true,
+                    email: true
+                },'roleid': {
+                    required: true,
+
+                },
+            }, messages: {
+                'email': {
+                    required: 'Bạn chưa nhập email',
+                    email: 'Vui lòng nhập đúng định dạng email.'
+                },'roleid': {
+                    required: 'Bạn chưa chọn phân quyền',
+
+                }
+
+            }
+        });
+        function loadDSRoles(keysearch) {
+            $.ajax({
+                url: '/Admin/Roles/GetAllRoles',
+                type: 'get',
+                data: {
+                    keysearch: keysearch
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        $.each(data.data, function (k, v) {
+                            let op = '<option value="' + v.roleid + '">' + v.rolename + '</option>'
+                            $('#roleid').append(op);
+
+                        })
+                    } else {
+                        loadDSRoles('');
+                    }
+                }
+            });
+        };
+
+
+        $('#btnSearch').click(function () {
+            page = 1;
+            search = $('#txtSearch').val();
+            $('#phanTrang').empty();
+            LoadDSAccount(search, page);
+
+
+        });
+        $('#phanTrang').on("click", "li", function (e) {
+            e.preventDefault();
+            page = $(this).text();
+            LoadDSAccount(search, page);
+        })
+
+        $('#btnAdd').click(function () {
+            $('#btnReset,#accountID,#createDate,#status,#lbAccountID,#lbcreateDate,#lbstatus').hide();
+            $('#username,#ipAccount,#roleid').val('');
+            $('#username,#roleid').prop('readonly', false);
+            $('#roleid').prop('disabled', false);
+            $('#status').prop('disabled', true);
+            $('#btnSubmit').show();
+            $('#btnSubmit').prop('disabled', true);
+            $('#modalTitle').text('Thêm tài khoản mới');
+            t.resetForm();
+            $('#modalAccount').modal();
+        });
+        $("#username").change(function () {
+            $('#btnSubmit').prop('disabled', false);
+        });
+        function ChiTietAccount(idAccount) {
+            t.resetForm();
+            $.ajax({
+                url: '/Admin/Accounts/GetAccountByAccountId',
+                type: 'get',
+                data: {
+                    accountId: idAccount
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        $('#username').val(data.data.username);
+                        $('#accountID').val(data.data.accountid);
+                        $('#roleid').val(data.data.roleid);
+                        $('#createDate').val(ConvertJsonDateString(data.data.createdate));
+                        $('#status').val(data.data.active == true ? 1 : 0);
+
+                    } else {
+                        alertify.error(data.Message);
+                    }
+                }
+            })
+        }
+
+        $('#btnSubmit').click(function () {
+
+            let email = $('#username').val().trim();
+            let roleid = $('#roleid').val();
+            if (email.length == 0) {
+                email = '';
+            }
+            @*if (roleid ==  null) {
+                roleid = 0;
+            }*@
+            let accountID = $('#ipAccount').val().trim();
+            if (accountID.length == 0) {
+                $.ajax({
+                    url: '/Admin/Accounts/AddAccount',
+                    type: 'post',
+                    data: {
+                        username: email,
+                        roleid: roleid
+                    },
+
+                    success: function (data) {
+                        if (data.status == 200) {
+
+                            LoadDSAccount(search, page);
+                            $('#username').val('');
+                            $('#roleid').val('');
+                            alertify.success(data.Message);
+                        } else {
+                            alertify.error(data.Message);
+                            return;
+                        }
+                    },
+                    error: function () {
+                        alert(data.Message);
+                        return;
+                    }
+
+                })
+            } else {
+                let AccountID =  $('#accountID').val().trim();
+               @* let Status =  $('#status').val().trim();*@
+                let st = $('#status').val();
+                let Status = st == 1 ? true : false;
+                if (confirm('Bạn thực sự muốn chỉnh sửa cho tài khoản này?')) {
+                    $.ajax({
+                        url: '/Admin/Accounts/EditAccount',
+                        type: 'post',
+
+                        data: {
+                            accountId: AccountID,
+                            roleid: roleid,
+                            active: Status,
+                        },
+
+                        success: function (data) {
+                            if (data.status == 200) {
+
+                                //alert(data.Message);
+                                $('#username').val('');
+                                $('#roleid').val('');
+                                $('#modalAccount').modal('hide');
+                                LoadDSAccount(search, page);
+                                alertify.success(data.Message);
+
+
+                            } else {
+                                alertify.error(data.Message);
+                                return;
+                            }
+                        },
+                        error: function () {
+                            alertify.danger(data.Message);
+                            return;
+                        }
+
+                    })
+                } else {
+                    return;
+                }
+
+            }
+            //dung ajax de them moi account
+
+        });
+        $(document).on('click', "button[name='View']", function () {
+            let idAccount = $(this).closest('tr').attr('id');
+            ChiTietAccount(idAccount);
+            $('#accountID,#createDate,#status,#lbAccountID,#lbcreateDate,#lbstatus').show();
+            $('#username,#roleid,#accountID,#createDate,#status').prop('readonly', true);
+            $('#roleid,#status').prop('disabled', true);
+            $('#btnReset,#btnSubmit').hide();
+            $('#modalTitle').text('Xem tài khoản');
+            $('#modalAccount').modal();
+
+        });
+        $(document).on('click', "button[name='Edit']", function () {
+            let idAccount = $(this).closest('tr').attr('id');
+            ChiTietAccount(idAccount);
+            $('#roleid,#status').prop('disabled', false);
+            $('#ipAccount').val(idAccount);
+
+            $('#accountID,#createDate,#status,#lbAccountID,#lbcreateDate,#lbstatus').show();
+            $('#username,#accountID,#createDate').prop('readonly', true);
+            $('#btnReset,#btnSubmit').show().prop('disabled', false);
+            $('#modalTitle').text('Sửa tài khoản');
+            $('#modalAccount').modal();
+
+        });
+
+        $('#btnReset').click(function () {
+            let AccountID = $('#accountID').val().trim();
+            if (confirm('Bạn thực sự muốn đặt lại mật khẩu cho tài khoản này?')) {
+                $.ajax({
+                    url: '/Admin/Accounts/ResetPassword',
+                    type: 'post',
+                    data: {
+                        accountId: AccountID,
+                    },
+                    success: function (data) {
+                        if (data.status == 200) {
+
+                            $('#username').val('');
+                            $('#roleid').val('');
+                            $('#modalAccount').modal('hide');
+                            LoadDSAccount(search, page);
+                            alertify.success(data.Message);
+                        } else {
+                            alertify.error(data.Message);
+                            return;
+                        }
+                    },
+                    error: function () {
+                        alert('sua1');
+                        alert(data.Message);
+                        return;
+                    }
+
+                })
+            } else {
+                return;
+            }
+
+        });
+
+        $(document).on('click', "button[name='Delete']", function () {
+            let idAccount = $(this).closest('tr').attr('id');
+            let vstatus = $(this).closest('input').attr('value');
+
+                if (confirm('Bạn thực sự muốn vô hiệu hóa tài khoản này?')) {
+                    $.ajax({
+                        url: '/Admin/Accounts/ChangeStatusAccount',
+                        type: 'post',
+                        data: {
+                            accountId: idAccount
+                        },
+                        success: function (data) {
+                            if (data.status == 200) {
+                                alertify.success(data.Message);
+                                LoadDSAccount(search, page);
+                            } else {
+                                alertify.error(data.Message);
+                            }
+                        }
+                    })
+                } else {
+                    return;
+                }
+        });
+
+
+        function LoadDSAccount(search, page) {
+            $.ajax({
+                url: '/Admin/Accounts/GetAllAccount',
+                type: 'get',
+                data: {
+                    keysearch: search,
+                    trang: page,
+
+
+                },
+                success: function (data) {
+                    console.log(data);
+
+                    if (data.status == 200) {
+                        $('#tbDSAccount').empty();
+                        if (search.length == 0) {
+                            $.each(data.data, function (k, v) {
+                                let tr = '<tr id="' + v.accountid + '">';
+                                tr += '<td class="col-md-1 text-center">' + (v.accountid) + '</td>';
+                                tr += '<td class="col-md-2">' + v.username + '</td>';
+                                tr += '<td class="col-md-1">' + v.rolename + '</td>';
+                                tr += '<td class=" col-md-2">' + ConvertJsonDateString(v.createdate) + '</td>';
+                                tr += '<td class=" col-md-2">' + (v.active == true ? 'Active' : 'Inactive') + '</td>';
+
+                                tr += '<td class="col-md-4 text-center ">'
+                                tr += ' <input type="text" hidden id="' + v.active + '" value="' + v.active + '" />'
+
+
+                                tr += '<button class="btn btn-xs btn-info" name="View" ><i class="fa fa-info-circle" aria-hidden="true"></i></button>'
+                                tr += '&nbsp<button class="btn btn-xs btn-warning" name="Edit" ><i class="fa fa-edit"></i></button>'
+                                if (v.active == true) {
+                                    tr += '&nbsp<button class="btn btn-xs btn-danger" name="Delete" ><i class="fa fa-trash" aria-hidden="true"></i></button>'
+                                }
+                                tr += '</td>';
+
+                                tr += '</tr>';
+                                $('#tbDSAccount').append(tr);
+
+                            });
+                        } else {
+
+                            $.each(data.data, function (k, v) {
+                                let tr = '<tr id="' + v.accountid + '">';
+                                tr += '<td class="col-md-1 text-center">' + (v.accountid) + '</td>';
+                                tr += '<td class="col-md-2">' + v.username + '</td>';
+                                tr += '<td class="col-md-1">' + v.rolename + '</td>';
+                                tr += '<td class=" col-md-2">' + ConvertJsonDateString(v.createdate) + '</td>';
+                                tr += '<td class=" col-md-2">' + (v.active == true ? 'Active' : 'Inactive') + '</td>';
+
+                                tr += '<td class="col-md-4 text-center ">'
+                                tr += ' <input type="text" hidden id="' + v.active + '" value="' + v.active + '" />'
+
+
+                                tr += '<button class="btn btn-xs btn-info" name="View" ><i class="fa fa-info-circle" aria-hidden="true"></i></button>'
+                                tr += '&nbsp<button class="btn btn-xs btn-warning" name="Edit" ><i class="fa fa-edit"></i></button>'
+                                tr += '&nbsp<button class="btn btn-xs btn-danger" name="Delete" ><i class="fa fa-trash" aria-hidden="true"></i></button>'
+                                tr += '</td>';
+
+                                tr += '</tr>';
+                                $('#tbDSAccount').append(tr);
+
+                            });
+
+                        }
+
+                        if (data.numPages >1) {
+                            $('#phanTrang').empty();
+                            for (i = 1; i <= data.numPages; i++) {
+                                let li = '<li class="page-item" id="'+i+'" ><a class="page-link" href="#">'+i+'</a></li>'
+                                $('#phanTrang').append(li);
+                            }
+                            let li = $('#phanTrang li#' + page + '');
+                            console.log('li duoc click', $(li).text());
+                            $(li).addClass('active');
+
+
+                        }
+                    } else {
+                        alertify.warning(data.Message);
+                        $('#tbDSAccount').empty();
+
+                        $('#phanTrang').empty();
+
+
+                    }
+
+                }
+
+            });
+        }
+        function ConvertJsonDateString(jsonDate) {
+            var shortDate = null;
+            if (jsonDate) {
+                var regex = /-?\d+/;
+                var matches = regex.exec(jsonDate);
+                var dt = new Date(parseInt(matches[0]));
+                var month = dt.getMonth() + 1;
+                var monthString = month > 9 ? month : '0' + month;
+                var day = dt.getDate();
+                var dayString = day > 9 ? day : '0' + day;
+                var year = dt.getFullYear();
+                shortDate = monthString + '/' + dayString + '/' + year;
+            }
+            return shortDate;
+        }
+
+        @* $('#txtSearch').on('keypress', function (e) {
+            if (e.which == 13) {
+                $('#btnSearch').click();
+
+
+                $('#txtSearch').val(search);
+            }
+        });*@
+        @* window.location.href = '@Url.Action("hihi", "Accounts")' *@
+    </script>
+}

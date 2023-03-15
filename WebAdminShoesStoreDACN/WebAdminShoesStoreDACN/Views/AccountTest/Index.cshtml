@@ -1,0 +1,88 @@
+﻿
+@model IEnumerable<WebAdminShoesStoreDACN.Models.account>
+
+    @{
+        ViewBag.Title = "Index";
+    }
+
+    <h2>Index</h2>
+
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <p>
+        @ViewBag.Message
+        @ViewBag.count
+    </p>
+
+    @if (Model != null)
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover  ">
+                <thead class="thead-dark bg-success">
+                    <tr>
+
+                        <th>
+                            @Html.DisplayNameFor(model => model.username)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.password)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.rolename)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.createdate)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.active)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody class="bg-warning">
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.username)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.password)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.rolename)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.createdate)
+                            </td>
+                            @{
+                                if (item.active == true)
+                                {
+                                    <td style="color:greenyellow">
+                                        Active
+                                    </td>
+
+                                }
+                                else
+                                {
+                                    <td style="color:red">
+                                        Inactive
+                                    </td>
+                                }
+
+                            }
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { id = item.accountid }) |
+                                @Html.ActionLink("Details", "Details", new { id = item.accountid }) |
+                                @Html.ActionLink("Delete", "Delete", new { id = item.accountid })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+

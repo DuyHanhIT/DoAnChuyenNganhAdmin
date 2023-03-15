@@ -1,0 +1,616 @@
+﻿
+@{
+    ViewBag.Title = "EmployeeIndex";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="card shadow mb-4">
+    <div class="card-header  py-3 bg-success">
+        <div class="row">
+            <h6 class="m-0 font-weight-bold text-danger col-md-3" style="text-transform:uppercase">Danh sách nhân viên</h6>
+            <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search col-md-3 ">
+                <div class="input-group">
+                    <input type="text" class="form-control bg-white border-0 small" placeholder="Search for..."
+                           aria-label="Search" aria-describedby="basic-addon2" id="txtSearchEp">
+                    <div class="input-group-append">
+                        <button class="btn btn-success" type="button" id="btnSearchEp">
+                            <i class="fas fa-search fa-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <nav aria-label="..." class="col-md-5">
+                <ul class="pagination pagination-sm" id="phanTrangEp"></ul>
+            </nav>
+            <div class=" text-right offset-5 mb-2  ">
+                <button class="btn  btn-success" id="btnAddEp" name="Add"><i class="fas fa-plus"></i> Thêm Mới</button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTableEp" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="col-md-1 text-center">Mã NV </th>
+                        <th class="col-md-2">Họ Tên</th>
+                        <th class="col-md-1">Giới tính</th>
+                        <th class="col-md-1">Avata</th>
+                        <th class="col-md-2">Số điện thoại</th>
+                        <th class="col-md-2">Account</th>
+                        <th class="col-md-3"></th>
+                    </tr>
+                </thead>
+                <tbody id="tbDsEp">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="modalEp" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h5 class="modal-title " style="color:#fff" id="modalTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" hidden id="ipEp" value="" />
+                <form id="form-employee">
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label id="lbEpId">Mã nhân viên</label>
+                            <input type="text" class="form-control" id="EpId" placeholder="Mã KH">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label id="lbLastName">Họ</label>
+                            <input type="text" class="form-control" id="LastName" placeholder="Họ" name="last">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label id="lbFirstName">Tên</label>
+                            <input type="text" class="form-control" id="FirstName" placeholder="Tên" name="first">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6 ">
+                            <label id="lbUserName">Account</label>
+                            <select class="form-control" id="UserName"></select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label id="lbPhone">Số điện thoại</label>
+                            <input type="number" class="form-control" id="Phone" placeholder="Số điện thoại" name="phone">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label id="lbNgaySinh">Ngày sinh</label>
+                            <div class="input-group date" data-provide="datepicker">
+                                <input type="text" class="form-control" id="NgaySinh">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label id="lbGender">Giới tính</label>
+
+                            <select class="form-control" id="gender">
+                                <option value="1">Nam</option>
+                                <option value="0">Nữ</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-7">
+                            <label id="lbAddress">Địa chỉ</label>
+                            <textarea class="form-control" id="Address" placeholder="Địa chỉ" name="address"></textarea>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label id="lbAvatar">Avatar</label>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="button" id="btnUploadAvatar" value="Chọn ảnh" class="btn btn-success " />
+                                <input type="text" class="form-control" id="Avatar" hidden>
+                                <input type="file" name="fileUpload" id="fileUploadAvatar" accept="image/*" style="display:none;" />
+                                <img src="" id="pictureUploadAvatar" class="col-md-12 mt-2" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" id="btnSubmitEp" class="btn btn-success">Save changes</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <link href="~/Areas/Admin/ContentAdmin/datepicker/css/bootstrap-datepicker.css" rel="stylesheet" />
+
+    <script src="~/Areas/Admin/ContentAdmin/datepicker/js/bootstrap-datepicker.js"></script>
+    <script>
+        var search = "";
+        var page = 1;
+        $(document).ready(function () {
+            loadDSEp(search, page);
+            loadDSAccount();
+        });
+        var t = $('#form-employee').validate({
+            rules: {
+                'last': {
+                    required: true,
+                    maxlength:100
+                }, 'first': {
+                    required: true,
+                    maxlength:100
+                }, 'phone': {
+                    required: true,
+                    number: true,
+                    maxlength: 11,
+                    minlength:10
+                }, 'address': {
+                    required: true,
+                    maxlength:190
+                },
+            }, messages: {
+                'last': {
+                    required: 'Bạn chưa nhập Họ',
+                    maxlength: 'Độ dài Họ tối đa 100 ký tự.',
+                }, 'first': {
+                    required: 'Bạn chưa nhập Tên',
+                    maxlength: 'Độ dài Tên tối đa 100 ký tự.',
+                }, 'phone': {
+                    required: 'Bạn chưa nhập số điện thoại',
+                    number: 'Số điện thoại phải là số.',
+                    maxlength: 'Độ dài số điện thoại <= 11 số.',
+                    minlength: 'Độ dài số điện thoại >=10 số.'
+                }, 'address': {
+                    required: 'Bạn chưa nhập địa chỉ',
+                    maxlength: 'Độ dài địa chỉ tối đa 190 ký tự.',
+                },
+
+            }
+        });
+
+        $('.datepicker').datepicker();
+        function loadDSAccount() {
+            $.ajax({
+                url: '/Admin/Accounts/GetAllAccountNotExistsINEmployee',
+                type: 'get',
+                success: function (data) {
+                    if (data.status == 200) {
+                        $('#UserName').empty();
+                        console.log(data.data);
+                        $.each(data.data, function (k, v) {
+                            let op = '<option value="' + v.accountid + '">' + v.username + '</option>'
+                            $('#UserName').append(op);
+                        })
+                    }
+                }
+            });
+        };
+
+        $('#btnSubmitEp').click(function () {
+            let epid = $('#EpId').val();
+            let accountid = $('#UserName').val();
+            let firstName = $('#FirstName').val().trim();
+            let lastName = $('#LastName').val().trim();
+            let birthday = $('#NgaySinh').val().trim();
+            let gender = $('#gender').val() == 1 ? true : false;
+            let phone = $('#Phone').val().toString().trim();
+            let address = $('#Address').val().trim();
+            let avatar = $('#Avatar').val().trim() == null ? null : $('#Avatar').val().trim().length < 1 ? null : $('#Avatar').val().trim();
+
+            let ID = $('#ipEp').val().trim();
+            if (ID.length == 0) {
+                $.ajax({
+                    url: '/Admin/Employee/AddEmployye',
+                    type: 'post',
+                    data: {
+                        accountid: accountid,
+                        firstName: firstName,
+                        lastName: lastName,
+                        birthday: birthday,
+                        gender: gender,
+                        phone: phone,
+                        address: address,
+                        avatar: avatar
+                    },
+
+                    success: function (data) {
+                        if (data.status == 200) {
+                            alertify.success(data.Message);
+                            $('#pictureUploadAvatar').attr('src', "");
+                            $('#pictureUploadAvatar').hide();
+                            $('#UserName,#FirstName,#LastName,#NgaySinh,#gender,#Phone,#Address,#Avatar,#ipEp').val('');
+                            loadDSEp(search, page);
+                            loadDSAccount();
+                        } else {
+                            alertify.error(data.Message);
+                            return;
+                        }
+                    },
+                    error: function () {
+                        alertify.error(data.Message);
+                        return;
+                    }
+
+                })
+
+            } else {
+
+                if (confirm('Bạn thực sự muốn chỉnh sửa nhân viên này?')) {
+                    $.ajax({
+                        url: '/Admin/Employee/UpdateEmployee',
+                        type: 'post',
+
+                        data: {
+                            epid: epid,
+                            accountid: accountid,
+                            firstName: firstName,
+                            lastName: lastName,
+                            birthday: birthday,
+                            gender: gender,
+                            phone: phone,
+                            address: address,
+                            avatar: avatar,
+                        },
+
+                        success: function (data) {
+                            if (data.status == 200) {
+                                alertify.success(data.Message);
+                                $('#modalEp').modal('hide');
+                                loadDSEp(search, page);
+                            } else {
+                                alertify.error(data.Message);
+                                return;
+                            }
+                        },
+                        error: function () {
+                            alertify.error(data.Message);
+                            return;
+                        }
+
+                    })
+                } else {
+                    return;
+                }
+
+            }
+
+
+        });
+
+
+        $('#btnAddEp').click(function () {
+
+            loadDSAccount();
+
+            $('#lbLastName,#LastName,#lbFirstName,#FirstName,#lbUserName,#UserName,#lbPhone,#Phone,#lbNgaySinh,#NgaySinh,#lbGender,#gender ,#lbAddress,#Address,#lbAvatar,#btnUploadAvatar').show();
+            $('#lbEpId,#EpId').hide();
+            $('#LastName,#FirstName,#UserName, #Phone,#NgaySinh,#gender,#Address').prop('readonly', false);
+            $('#gender,#UserName,#NgaySinh').prop('disabled', false);
+
+            $('#LastName,#FirstName,#UserName, #Phone,#NgaySinh,#gender,#Address,#ipEp').val('');
+            $('#UserName').val('');
+            $('#NgaySinh').prop('disabled', false);
+            $('#btnUploadAvatar,#btnSubmitEp').show();
+            $('#pictureUploadAvatar').attr('src', "");
+            $('#pictureUploadAvatar').hide();
+            $('#btnUploadAvatar').prop('disabled', false);
+
+            $('#modalTitle').text('Thêm nhân viên');
+            t.resetForm();
+            $('#modalEp').modal();
+        });
+        $(document).on('click', "button[name='ViewEp']", function () {
+            let idEp = $(this).closest('tr').attr('id');
+            ChiTietEp(idEp);
+            $('#btnUploadAvatar').hide();
+            $('#gender,#UserName').prop('disabled', true);
+            $('#EpId,#LastName,#FirstName,#UserName,#Phone,#NgaySinh,#Address,#Avatar').prop('readonly', true);
+            $('#NgaySinh').prop('disabled', true);
+            $('#pictureUploadAvatar,#EpId,#lbEpId ,#lbLastName,#LastName,#lbFirstName,#FirstName,#lbUserName,#UserName,#lbPhone,#Phone,#lbNgaySinh,#NgaySinh,#lbGender,#gender ,#lbAddress,#Address,#lbAvatar').show();
+
+            $('#btnSubmitEp').hide();
+            $('#modalTitle').text('Xem thông tin nhân viên');
+            $('#modalEp').modal();
+        });
+
+        $(document).on('click', "button[name='EditEp']", function () {
+            loadDSAccount();
+
+            let idEp = $(this).closest('tr').attr('id');
+            ChiTietEp(idEp);
+            $('#btnUploadAvatar,#btnSubmitEp').show();
+            $('#NgaySinh').prop('disabled', false);
+            $('#LastName,#FirstName,#UserName, #Phone,#NgaySinh,#gender,#Address').prop('readonly', false);
+            $('#btnUploadAvatar,#btnSubmitEp,#UserName').prop('disabled', false);
+            $('#gender').prop('disabled', false);
+            $('#UserName').prop('disabled', true);
+            $('#EpId').prop('readonly', true);
+            $('#pictureUploadAvatar,#EpId,#lbEpId,#lbLastName,#LastName,#lbFirstName,#FirstName,#lbUserName,#UserName,#lbPhone,#Phone,#lbNgaySinh,#NgaySinh,#lbGender,#gender ,#lbAddress,#Address,#lbAvatar,#btnUploadAvatar').show();
+            $('#UserName,#lbUserName').hide();
+            $('#ipEp').val(idEp);
+            $('#modalTitle').text('Sửa thông tin nhân viên');
+            t.resetForm();
+            $('#modalEp').modal();
+
+
+        });
+        function ChiTietEp(epid) {
+            $.ajax({
+                url: '/Admin/Employee/GetEmployeeByEmployeeId',
+                type: 'get',
+                data: {
+                    epid: epid
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+
+                        let op = '<option value="' + data.data.accountid + '">' + data.data.username + '</option>'
+                        $('#UserName').append(op);
+                        $('#EpId').val(data.data.epid);
+                        $('#LastName').val(data.data.lastName);
+                        $('#FirstName').val(data.data.firstName);
+                        $('#UserName').val(data.data.accountid);
+                        $('#Phone').val(parseInt(data.data.phone));
+                        $('#NgaySinh').val(ConvertJsonDateString(data.data.birthday));
+                        $('#gender').val((data.data.gender == true ? 1 : 0));
+                        $('#Address').val(data.data.address);
+                        $('#pictureUploadAvatar').attr('src', data.data.avatar);
+                        $('#pictureUploadAvatar').show();
+                        $('#Avatar').val(data.data.avatar);
+
+                    } else {
+                        alertify.error(data.Message);
+                    }
+                }
+            })
+        };
+        function loadDSEp(search, page) {
+            $.ajax({
+                url: '/Admin/Employee/GetAllUser',
+                type: 'get',
+                data: {
+                    keysearch: search,
+                    trang: page,
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        $('#tbDsEp').empty();
+
+                        $.each(data.data, function (k, v) {
+                            let tr = '<tr id="' + v.epid + '">';
+                            tr += '<td class="col-md-1 text-center">' + (v.epid) + '</td>';
+                            tr += '<td class="col-md-2">' + v.lastName + ' ' + v.firstName + '</td>';
+                            tr += '<td class="col-md-1">' + (v.gender==1?'Nam':'Nữ') + '</td>';
+                            tr += '<td class=" col-md-1"><img src="' + v.avatar + '"  class="col-md-12 " /></td>';
+                            tr += '<td class="col-md-2">' + v.phone + '</td>';
+                            tr += '<td class="col-md-2">' + v.username + '</td>';
+                            tr += '<td class="col-md-3 text-center ">';
+                            tr += '<button class="btn btn-xs btn-info" name="ViewEp" ><i class="fa fa-info-circle" aria-hidden="true"></i></button>'
+                            tr += '&nbsp<button class="btn btn-xs btn-warning" name="EditEp" ><i class="fa fa-edit"></i></button>'
+                            tr += '</td>';
+
+                            tr += '</tr>';
+
+                            $('#tbDsEp').append(tr);
+
+                        });
+
+                        if (data.numPages > 1) {
+                            $('#phanTrangEp').empty();
+                            for (i = 1; i <= data.numPages; i++) {
+                                let li = '<li class="page-item" id="' + i + '" ><a class="page-link" href="#">' + i + '</a></li>'
+                                $('#phanTrangEp').append(li);
+                            }
+                            let li = $('#phanTrangEp li#' + page + '');
+                            console.log('li duoc click', $(li).text());
+                            $(li).addClass('active');
+
+
+                        }
+                    } else {
+                        if (search.length > 0) {
+                            alertify.error('Không có kết quả nào cho từ khóa "' + search + '"');
+                        } else {
+                            alertify.error(data.Message);
+                        }
+
+                        $('#tbDsEp').empty();
+
+                        $('#phanTrangEp').empty();
+
+
+                    }
+                }
+            });
+        };
+
+
+        $('#btnSearchEp').click(function () {
+            page = 1;
+            search = $('#txtSearchEp').val();
+            $('#phanTrangEp').empty();
+            loadDSEp(search, page);
+        });
+        $('#phanTrangEp').on("click", "li", function (e) {
+            e.preventDefault();
+            page = $(this).text();
+            loadDSEp(search, page);
+        });
+        function ConvertJsonDateString(jsonDate) {
+            var shortDate = null;
+            if (jsonDate) {
+                var regex = /-?\d+/;
+                var matches = regex.exec(jsonDate);
+                var dt = new Date(parseInt(matches[0]));
+                var month = dt.getMonth() + 1;
+                var monthString = month > 9 ? month : '0' + month;
+                var day = dt.getDate();
+                var dayString = day > 9 ? day : '0' + day;
+                var year = dt.getFullYear();
+                shortDate = monthString + '/' + dayString + '/' + year;
+                //shortDate = dayString + '/' + monthString + '/' + year;
+            }
+            return shortDate;
+        };
+
+        $('#btnUploadAvatar').click(function () {
+            $('#pictureUploadAvatar').attr('src', "");
+            $('#fileUploadAvatar').trigger('click');
+        });
+
+        $('#fileUploadAvatar').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUploadAvatar').get(0);
+
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
+
+                $.ajax(
+                    {
+                        type: 'post',
+                        url: '/Admin/Shoes/ProcessUpload',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (data) {
+                            if (data.status == 200) {
+                                $('#pictureUploadAvatar').attr('src', data.data);
+                                $('#pictureUploadAvatar').show();
+                                $('#Avatar').val(data.data);
+                                alertify.success('Upload thành công');
+                            } else {
+                                alertify.error(data.Message);
+                            }
+                        },
+                        error: function (err) {
+                            alertify.error('Đã xảy ra lỗi, vui lòng thử lại!');
+
+                        }
+                    });
+            }
+        });
+        @*$('#btnUpload2').click(function () {
+            $('#fileUpload2').trigger('click');
+        });
+        $('#fileUpload2').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUpload2').get(0);
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
+
+                $.ajax(
+                    {
+                        type: 'post',
+                        url: '/Admin/Shoes/ProcessUpload',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (data) {
+
+                            $('#pictureUpload2').show();
+                            $('#pictureUpload2').attr('src', data.data);
+                            $('#img2').val(data.data);
+                        },
+                        error: function (err) {
+                            alert('Error ', err.statusText);
+
+                        }
+                    });
+            }
+        });
+        $('#btnUpload3').click(function () {
+            $('#fileUpload3').trigger('click');
+        });
+        $('#fileUpload3').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUpload3').get(0);
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
+
+                $.ajax(
+                    {
+                        type: 'post',
+                        url: '/Admin/Shoes/ProcessUpload',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (data) {
+
+                            $('#pictureUpload3').show();
+                            $('#pictureUpload3').attr('src', data.data);
+                            $('#img3').val(data.data);
+                        },
+                        error: function (err) {
+                            alert('Error ', err.statusText);
+
+                        }
+                    });
+            }
+        });
+        $('#btnUpload4').click(function () {
+            $('#fileUpload4').trigger('click');
+        });
+        $('#fileUpload4').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUpload4').get(0);
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
+
+                $.ajax(
+                    {
+                        type: 'post',
+                        url: '/Admin/Shoes/ProcessUpload',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (data) {
+
+                            $('#pictureUpload4').show();
+                            $('#pictureUpload4').attr('src', data.data);
+                            $('#img4').val(data.data);
+                        },
+                        error: function (err) {
+                            alert('Error ', err.statusText);
+
+                        }
+                    });
+            }
+        });*@
+
+        @* $('#txtSearch').on('keypress', function (e) {
+            if (e.which == 13) {
+                $('#btnSearch').click();
+
+
+                $('#txtSearch').val(search);
+            }
+        });*@
+        @* window.location.href = '@Url.Action("hihi", "Accounts")' *@
+    </script>
+}
+
+
+

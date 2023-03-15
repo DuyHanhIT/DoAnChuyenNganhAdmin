@@ -1,0 +1,582 @@
+﻿
+@{
+    ViewBag.Title = "UserIndex";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="card shadow mb-4">
+    <div class="card-header  py-3 bg-success">
+        <div class="row">
+            <h6 class="m-0 font-weight-bold text-danger col-md-3" style="text-transform:uppercase">Danh sách khách hàng</h6>
+            <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search col-md-3 ">
+                <div class="input-group">
+                    <input type="text" class="form-control bg-white border-0 small" placeholder="Search for..."
+                           aria-label="Search" aria-describedby="basic-addon2" id="txtSearchUser">
+                    <div class="input-group-append">
+                        <button class="btn btn-success" type="button" id="btnSearchUser">
+                            <i class="fas fa-search fa-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <nav aria-label="..." class="col-md-5">
+                <ul class="pagination pagination-sm" id="phanTrangUser"></ul>
+            </nav>
+            @*<div class=" text-right offset-5 mb-2  ">
+                <button class="btn  btn-success" id="btnAddUser" name="Add"><i class="fas fa-plus"></i> Thêm Mới</button>
+            </div>*@
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTableUser" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="col-md-1 text-center">Mã KH </th>
+                        <th class="col-md-2">Họ Tên</th>
+                        <th class="col-md-3">Email</th>
+                        <th class="col-md-1">Avata</th>
+                        <th class="col-md-2">Số điện thoại</th>
+                        <th class="col-md-3"></th>
+                    </tr>
+                </thead>
+                <tbody id="tbDsUser">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="modalUser" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h5 class="modal-title " style="color:#fff" id="modalTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" hidden id="ipUser" value="" />
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label id="lbUserId">Mã khách hàng</label>
+                        <input type="text" class="form-control" id="UserId" placeholder="Mã KH">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label id="lbLastName">Họ</label>
+                        <input type="text" class="form-control" id="LastName" placeholder="Ho">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label id="lbFirstName">Tên</label>
+                        <input type="text" class="form-control" id="FirstName" placeholder="Ten">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6 ">
+                        <label id="lbUserName">Username</label>
+                        <input type="text" class="form-control" id="UserName" placeholder="Mã hãng">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label id="lbPhone">Số điện thoại</label>
+                        <input type="text" class="form-control" id="Phone" placeholder="Mã hãng">
+                    </div>
+                </div>
+                
+                
+                <div class="form-group ">
+                    <label id="lbEmail">Email</label>
+                    <input type="text" class="form-control" id="Email" placeholder="Mã hãng">
+                </div>
+                <div class="form-group ">
+                    <label id="lbAddress">Địa chỉ</label>
+                    <input type="text" class="form-control" id="Address" placeholder="Mã hãng">
+                </div>
+                
+                <div class="form-group">
+                    <label id="lbAvatar">Avatar</label>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <input type="button" id="btnUploadAvatar" value="Chọn ảnh" class="btn btn-success " />
+                            <input type="text" class="form-control" id="Avatar" hidden>
+                            <input type="file" name="fileUpload" id="fileUploadAvatar" accept="image/*" style="display:none;" />
+                            <img src="" id="pictureUploadAvatar" class="col-md-12 mt-2" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" id="btnSubmitUser" class="btn btn-success">Save changes</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var search = "";
+        var page = 1;
+        $(document).ready(function () {
+            loadDSUser(search, page);
+        });
+        $(document).on('click', "button[name='ViewUser']", function () {
+            let idUser = $(this).closest('tr').attr('id');
+            ChiTietUser(idUser);
+            $('#btnUploadAvatar').hide();
+           
+
+            $('#UserId,#LastName,#LastName,#FirstName,#UserName,#Phone,#Email,#Address,#Avatar').prop('readonly', true);
+            $('#UserId,#LastName,#LastName,#FirstName,#UserName,#Phone,#Email,#Address,#Avatar ,#pictureUploadAvatar,#lbAvatar,#lbAddress,#lbEmail ,#lbPhone,#lbUserName,#lbFirstName,#lbLastName,#lbUserId').show();
+            @*$('#UserId').attr('class', 'bg-white');*@
+            $('#btnSubmitUser').hide();
+            $('#modalTitle').text('Xem thông tin khách hàng');
+            $('#modalUser').modal();
+
+
+        });
+        function ChiTietUser(userid) {
+            $.ajax({
+                url: '/Admin/Users/GetUserByUserId',
+                type: 'get',
+                data: {
+                    userid: userid
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        
+                        $('#UserId').val(data.data.userid);
+                        $('#LastName').val(data.data.lastName);
+                        $('#FirstName').val(data.data.firstName);
+                        $('#UserName').val(data.data.username);
+                        $('#Phone').val(data.data.phone);
+                        $('#Email').val(data.data.email);
+                        $('#Address').val(data.data.address);
+                        $('#pictureUploadAvatar').attr('src', data.data.avatar);
+                        $('#pictureUploadAvatar').show();
+                        $('#Avatar').val(data.data.avatar);
+
+                    } else {
+                        alertify.error(data.Message);
+                    }
+                }
+            })
+        };
+        function loadDSUser(search, page) {
+            $.ajax({
+                url: '/Admin/Users/GetAllUser',
+                type: 'get',
+                data: {
+                    keysearch: search,
+                    trang: page,
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        $('#tbDsUser').empty();
+                        
+                        $.each(data.data, function (k, v) {
+                            let tr = '<tr id="' + v.userid + '">';
+                            tr += '<td class="col-md-1 text-center">' + (v.userid) + '</td>';
+                            tr += '<td class="col-md-2">' + v.lastName + ' ' +v.firstName+'</td>';
+                            tr += '<td class="col-md-3">' + v.email + '</td>';
+                            tr += '<td class=" col-md-1"><img src="' + v.avatar + '"  class="col-md-12 " /></td>';
+                            tr += '<td class="col-md-2">' + v.phone + '</td>';
+                            tr += '<td class="col-md-3 text-center ">';
+                            tr += '<button class="btn btn-xs btn-info" name="ViewUser" ><i class="fa fa-info-circle" aria-hidden="true"></i></button>'
+                            @*tr += '&nbsp<button class="btn btn-xs btn-warning" name="EditBrand" ><i class="fa fa-edit"></i></button>'
+                            *@tr += '</td>';
+
+                            tr += '</tr>';
+
+                            $('#tbDsUser').append(tr);
+
+                        });
+
+                        if (data.numPages > 1) {
+                            $('#phanTrangUser').empty();
+                            for (i = 1; i <= data.numPages; i++) {
+                                let li = '<li class="page-item" id="' + i + '" ><a class="page-link" href="#">' + i + '</a></li>'
+                                $('#phanTrangUser').append(li);
+                            }
+                            let li = $('#phanTrangUser li#' + page + '');
+                            console.log('li duoc click', $(li).text());
+                            $(li).addClass('active');
+
+
+                        }
+                    } else {
+                        if (search.length > 0) {
+                            alertify.error('Không có kết quả nào cho từ khóa "' + search + '"');
+                        } else {
+                            alertify.error(data.Message);
+                        }
+                        $('#tbDsUser').empty();
+
+                        $('#phanTrangUser').empty();
+
+
+                    }
+                }
+            });
+        };
+
+
+        $('#btnSearchUser').click(function () {
+            page = 1;
+            search = $('#txtSearchUser').val();
+            $('#phanTrangUser').empty();
+            loadDSUser(search, page);
+        });
+        $('#phanTrangUser').on("click", "li", function (e) {
+            e.preventDefault();
+            page = $(this).text();
+            loadDSUser(search, page);
+        });
+
+@*
+        $('#btnAddBrand').click(function () {
+
+            $('#lbBrandName,#lbBrandInfomation,#lbBrandLogo,#brandname,#brandInformation,#logo').show();
+            $('#BrandId,#lbBrandId').hide();
+            $('#brandname,#brandInformation,#logo').prop('readonly', false);
+            $('#brandname,#brandInformation,#logo,#ipBrand').val('');
+            $('#btnUploadlogo,#btnSubmitBrand').show();
+            $('#pictureUpload1').attr('src', "");
+            $('#pictureUpload1').hide();
+            $('#btnUploadlogo').prop('disabled', false);
+
+            $('#modalTitle').text('Thêm hãng giày');
+            $('#modalBrand').modal();
+        });
+        $(document).on('click', "button[name='EditBrand']", function () {
+            let idBrand = $(this).closest('tr').attr('id');
+            ChiTietBrand(idBrand);
+            $('#btnUploadlogo,#btnSubmitBrand').show();
+
+
+            $('#btnUploadlogo,#btnSubmitBrand').prop('disabled', false);
+            $('#brandname,#brandInformation,#logo').prop('readonly', false);
+            $('#BrandId').prop('readonly', true);
+            $('#BrandId,#brandname,#brandInformation,#logo ,#lbBrandId,#lbBrandName,#lbBrandInfomation,#lbBrandLogo').show();
+            $('#ipBrand').val(idBrand);
+
+
+
+            $('#modalTitle').text('Sửa hãng');
+            $('#modalBrand').modal();
+
+
+        });
+        
+
+       
+
+        $('#btnSubmitBrand').click(function () {
+            let brandid = $('#BrandId').val();
+            let brandname = $('#brandname').val().trim();
+            let information = $('#brandInformation').val().trim();
+            let logo = $('#logo').val().trim() == null ? null : $('#logo').val().trim().length < 1 ? null : $('#logo').val().trim();
+
+            let ID = $('#ipBrand').val().trim();
+            if (ID.length == 0) {
+                $.ajax({
+                    url: '/Admin/Brands/AddBrand',
+                    type: 'post',
+                    data: {
+                        brandname: brandname,
+                        information: information,
+                        logo: logo,
+
+
+                    },
+
+                    success: function (data) {
+                        if (data.status == 200) {
+                            alert(data.Message);
+                            loadDSBrand(search, page);
+                            $('#pictureUpload1').attr('src', "");
+                            $('#pictureUpload1').hide();
+                            $('#BrandId,#brandname,#brandInformation,#logo,#ipBrand').val('');
+
+
+                        } else {
+                            alert(data.Message);
+                            return;
+                        }
+                    },
+                    error: function () {
+                        alert(data.Message);
+                        return;
+                    }
+
+                })
+
+            } else {
+
+                if (confirm('Bạn thực sự muốn chỉnh sửa hãng này?')) {
+                    $.ajax({
+                        url: '/Admin/Brands/UpdateBrand',
+                        type: 'post',
+
+                        data: {
+                            brandid: brandid,
+                            brandname: brandname,
+                            information: information,
+                            logo: logo,
+                        },
+
+                        success: function (data) {
+                            if (data.status == 200) {
+                                alert(data.Message);
+                                $('#modalBrand').modal('hide');
+                                loadDSBrand(search, page);
+
+                            } else {
+                                alert(data.Message);
+                                return;
+                            }
+                        },
+                        error: function () {
+                            alert('sua1');
+                            alert(data.Message);
+                            return;
+                        }
+
+                    })
+                } else {
+                    return;
+                }
+
+            }
+
+
+        });
+*@
+
+
+
+
+
+
+        @*function LoadDSShoes(search, page) {
+            $.ajax({
+                url: '/Admin/Shoes/GetAllShoes',
+                type: 'get',
+                data: {
+                    keysearch: search,
+                    trang: page,
+
+
+                },
+                success: function (data) {
+                    console.log(data);
+
+                    if (data.status == 200) {
+                        $('#tbDsShoes').empty();
+
+                        $.each(data.data, function (k, v) {
+                            let tr = '<tr id="' + v.shoeid + '">';
+                            tr += '<td class="col-md-1 text-center">' + (v.shoeid) + '</td>';
+                            tr += '<td class="col-md-2">' + v.shoename + '</td>';
+                            tr += '<td class="col-md-1">' + v.price + '<span > $</span></td>';
+                            tr += '<td class=" col-md-2">' + (v.active == true ? 'Đang kinh doanh' : 'Ngừng kinh doanh') + '</td>';
+                            tr += '<td class=" col-md-2">' + v.brandname + '</td>';
+
+
+                            tr += '<td class="col-md-4 text-center ">'
+
+
+                            tr += '<button class="btn btn-xs btn-info" name="ViewShoes" ><i class="fa fa-info-circle" aria-hidden="true"></i></button>'
+                            tr += '&nbsp<button class="btn btn-xs btn-warning" name="EditShoes" ><i class="fa fa-edit"></i></button>'
+                            tr += '</td>';
+
+                            tr += '</tr>';
+
+                            $('#tbDsShoes').append(tr);
+
+                        });
+
+                        if (data.numPages >1) {
+                            $('#phanTrangShoes').empty();
+                            for (i = 1; i <= data.numPages; i++) {
+                                let li = '<li class="page-item" id="'+i+'" ><a class="page-link" href="#">'+i+'</a></li>'
+                                $('#phanTrangShoes').append(li);
+                            }
+                            let li = $('#phanTrangShoes li#' + page + '');
+                            console.log('li duoc click', $(li).text());
+                            $(li).addClass('active');
+
+
+                        }
+                    } else {
+                        alert(data.Message);
+
+                        $('#tbDsShoes').empty();
+
+                        $('#phanTrangShoes').empty();
+
+
+                    }
+
+                }
+
+            });
+        }*@
+        function ConvertJsonDateString(jsonDate) {
+            var shortDate = null;
+            if (jsonDate) {
+                var regex = /-?\d+/;
+                var matches = regex.exec(jsonDate);
+                var dt = new Date(parseInt(matches[0]));
+                var month = dt.getMonth() + 1;
+                var monthString = month > 9 ? month : '0' + month;
+                var day = dt.getDate();
+                var dayString = day > 9 ? day : '0' + day;
+                var year = dt.getFullYear();
+                //shortDate = monthString + '/' + dayString + '/' + year;
+                shortDate = dayString + '/' + monthString + '/' + year;
+            }
+            return shortDate;
+        };
+        @*$('#btnUploadlogo').click(function () {
+            $('#pictureUpload1').attr('src', "");
+            $('#fileUploadlogo').trigger('click');
+        });
+
+        $('#fileUploadlogo').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUploadlogo').get(0);
+
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
+
+                $.ajax(
+                    {
+                        type: 'post',
+                        url: '/Admin/Shoes/ProcessUpload',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (data) {
+                            $('#pictureUpload1').attr('src', data.data);
+                            $('#pictureUpload1').show();
+                            $('#logo').val(data.data);
+
+                        },
+                        error: function (err) {
+                            alert('Error ', err.statusText);
+
+                        }
+                    });
+            }
+        });*@
+        @*$('#btnUpload2').click(function () {
+            $('#fileUpload2').trigger('click');
+        });
+        $('#fileUpload2').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUpload2').get(0);
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
+
+                $.ajax(
+                    {
+                        type: 'post',
+                        url: '/Admin/Shoes/ProcessUpload',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (data) {
+
+                            $('#pictureUpload2').show();
+                            $('#pictureUpload2').attr('src', data.data);
+                            $('#img2').val(data.data);
+                        },
+                        error: function (err) {
+                            alert('Error ', err.statusText);
+
+                        }
+                    });
+            }
+        });
+        $('#btnUpload3').click(function () {
+            $('#fileUpload3').trigger('click');
+        });
+        $('#fileUpload3').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUpload3').get(0);
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
+
+                $.ajax(
+                    {
+                        type: 'post',
+                        url: '/Admin/Shoes/ProcessUpload',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (data) {
+
+                            $('#pictureUpload3').show();
+                            $('#pictureUpload3').attr('src', data.data);
+                            $('#img3').val(data.data);
+                        },
+                        error: function (err) {
+                            alert('Error ', err.statusText);
+
+                        }
+                    });
+            }
+        });
+        $('#btnUpload4').click(function () {
+            $('#fileUpload4').trigger('click');
+        });
+        $('#fileUpload4').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUpload4').get(0);
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
+
+                $.ajax(
+                    {
+                        type: 'post',
+                        url: '/Admin/Shoes/ProcessUpload',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (data) {
+
+                            $('#pictureUpload4').show();
+                            $('#pictureUpload4').attr('src', data.data);
+                            $('#img4').val(data.data);
+                        },
+                        error: function (err) {
+                            alert('Error ', err.statusText);
+
+                        }
+                    });
+            }
+        });*@
+
+        @* $('#txtSearch').on('keypress', function (e) {
+            if (e.which == 13) {
+                $('#btnSearch').click();
+
+
+                $('#txtSearch').val(search);
+            }
+        });*@
+        @* window.location.href = '@Url.Action("hihi", "Accounts")' *@
+    </script>
+}
+

@@ -1,0 +1,523 @@
+﻿
+@{
+    ViewBag.Title = "SizeTableIndex";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header  py-3 bg-success">
+        <div class="row">
+            <h6 class="m-0 font-weight-bold text-danger col-md-3" style="text-transform:uppercase">Danh sách bảng size</h6>
+            <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search col-md-3 ">
+                <div class="input-group">
+                    <input type="text" class="form-control bg-white border-0 small" placeholder="Search for..."
+                           aria-label="Search" aria-describedby="basic-addon2" id="txtSearchST">
+                    <div class="input-group-append">
+                        <button class="btn btn-success" type="button" id="btnSearchST">
+                            <i class="fas fa-search fa-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <nav aria-label="..." class="col-md-5">
+                <ul class="pagination pagination-sm" id="phanTrangST"></ul>
+            </nav>
+            @*<div class=" text-right offset-5 mb-2  ">
+                    <button class="btn  btn-success" id="btnAddBrand" name="Add"><i class="fas fa-plus"></i> Thêm Mới</button>
+                </div>*@
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTableST" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="col-md-1 text-center">Mã Size </th>
+                        <th class="col-md-2">Tên giày</th>
+                        <th class="table-success text-center">S38</th>
+                        <th class="table-active text-center">S39</th>
+                        <th class="table-secondary text-center">S40</th>
+                        <th class="table-success  text-center">S41</th>
+                        <th class="table-danger text-center">S42</th>
+                        <th class="table-warning text-center">S43</th>
+                        <th class="table-info text-center">S44</th>
+                        <th class="table-light text-center">S45</th>
+                        <th class="table-dark text-center">S46</th>
+                        <th class="table-success text-center">S47</th>
+                        <th class="table-active text-center">S48</th>
+                        <th class="col-md-2"></th>
+                    </tr>
+                </thead>
+                <tbody id="tbDsST">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="modalST" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h5 class="modal-title " style="color:#fff" id="modalTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" hidden id="ipST" value="" />
+                <form id="form-sizetable">
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label id="lbSTID">Mã Size</label>
+                            <input type="text" class="form-control" id="STID" placeholder="Mã Size">
+                        </div>
+                        <div class="form-group col-md-7">
+                            <label id="lbshoesname">Tên sản phẩm</label>
+                            <input type="text" class="form-control" id="shoesname" placeholder="Tên sản phẩm">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label id="lbS38">Size 38</label>
+                            <input type="number" class="form-control" id="S38" placeholder="Size 38" name="s38">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label id="lbS39">Size 39</label>
+                            <input type="number" class="form-control" id="S39" placeholder="Size 39" name="s39">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label id="lbS40">Size 40</label>
+                            <input type="number" class="form-control" id="S40" placeholder="Size 40" name="s40">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label id="lbS41">Size 41</label>
+                            <input type="number" class="form-control" id="S41" placeholder="Size 41" name="s41">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label id="lbS42">Size 42</label>
+                            <input type="number" class="form-control" id="S42" placeholder="Size 42" name="s42">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label id="lbS43">Size 43</label>
+                            <input type="number" class="form-control" id="S43" placeholder="Size 43"name="s43">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label id="lbS44">Size 44</label>
+                            <input type="number" class="form-control" id="S44" placeholder="Size 44"name="s44">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label id="lbS45">Size 45</label>
+                            <input type="number" class="form-control" id="S45" placeholder="Size 45"name="s45">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label id="lbS46">Size 46</label>
+                            <input type="number" class="form-control" id="S46" placeholder="Size 46"name="s46">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label id="lbS47">Size 47</label>
+                            <input type="number" class="form-control" id="S47" placeholder="Size 47"name="s47">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label id="lbS48">Size 48</label>
+                            <input type="number" class="form-control" id="S48" placeholder="Size 48"name="s48">
+                        </div>
+                    </div>
+
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" id="btnSubmitST" class="btn btn-success">Save changes</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        var search = "";
+        var page = 1;
+        $(document).ready(function () {
+            loadDSST(search, page);
+        });
+        var t = $('#form-sizetable').validate({
+            rules: {
+                's38': {
+                    required: true,
+                    number: true,
+                    min: 0
+                }, 's39': {
+                    required: true,
+                    number: true,
+                    min: 0
+                }, 's40': {
+                    required: true,
+                    number: true,
+                    min: 0
+                }, 's41': {
+                    required: true,
+                    number: true,
+                    min: 0
+                }, 's42': {
+                    required: true,
+                    number: true,
+                    min: 0
+                }, 's43': {
+                    required: true,
+                    number: true,
+                    min: 0
+                }, 's44': {
+                    required: true,
+                    number: true,
+                    min: 0
+                }, 's45': {
+                    required: true,
+                    number: true,
+                    min: 0
+                }, 's46': {
+                    required: true,
+                    number: true,
+                    min: 0
+                }, 's47': {
+                    required: true,
+                    number: true,
+                    min: 0
+                }, 's48': {
+                    required: true,
+                    number: true,
+                    min: 0
+                }, 
+            }, messages: {
+                's38': {
+                    required: 'Không được để trống',
+                    number: 'Giá trị phải là số .',
+                    min: 'Số lượng giày phải >= 0'
+                },'s39': {
+                    required: 'Không được để trống',
+                    number: 'Giá trị phải là số .',
+                    min: 'Số lượng giày phải >= 0'
+                },'s40': {
+                    required: 'Không được để trống',
+                    number: 'Giá trị phải là số .',
+                    min: 'Số lượng giày phải >= 0'
+                },'s41': {
+                    required: 'Không được để trống',
+                    number: 'Giá trị phải là số .',
+                    min: 'Số lượng giày phải >= 0'
+                },'s42': {
+                    required: 'Không được để trống',
+                    number: 'Giá trị phải là số .',
+                    min: 'Số lượng giày phải >= 0'
+                },'s43': {
+                    required: 'Không được để trống',
+                    number: 'Giá trị phải là số .',
+                    min: 'Số lượng giày phải >= 0'
+                },'s44': {
+                    required: 'Không được để trống',
+                    number: 'Giá trị phải là số .',
+                    min: 'Số lượng giày phải >= 0'
+                },'s45': {
+                    required: 'Không được để trống',
+                    number: 'Giá trị phải là số .',
+                    min: 'Số lượng giày phải >= 0'
+                },'s46': {
+                    required: 'Không được để trống',
+                    number: 'Giá trị phải là số .',
+                    min: 'Số lượng giày phải >= 0'
+                },'s47': {
+                    required: 'Không được để trống',
+                    number: 'Giá trị phải là số .',
+                    min: 'Số lượng giày phải >= 0'
+                },'s48': {
+                    required: 'Không được để trống',
+                    number: 'Giá trị phải là số .',
+                    min: 'Số lượng giày phải >= 0'
+                },
+
+            }
+        });
+        function loadDSST(search, page) {
+            $.ajax({
+                url: '/Admin/SizeTables/GetAllSizeTable',
+                type: 'get',
+                data: {
+                    keysearch: search,
+                    trang: page,
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        $('#tbDsST').empty();
+
+                        $.each(data.data, function (k, v) {
+                            let tr = '<tr id="' + v.stid + '">';
+                            tr += '<td class="col-md-1 text-center">' + (v.stid) + '</td>';
+                            tr += '<td class="col-md-2">' + v.shoename + '</td>';
+                            tr += '<td class="table-success text-center">' + v.s38 + '</td>';
+                            tr += '<td class="table-active text-center">' + v.s39 + '</td>';
+                            tr += '<td class="table-secondary text-center">' + v.s40 + '</td>';
+                            tr += '<td class="table-success text-center">' + v.s41 + '</td>';
+                            tr += '<td class="table-danger text-center">' + v.s42 + '</td>';
+                            tr += '<td class="table-warning text-center">' + v.s43 + '</td>';
+                            tr += '<td class="table-info text-center">' + v.s44 + '</td>';
+                            tr += '<td class="table-light text-center">' + v.s45 + '</td>';
+                            tr += '<td class="table-dark text-center">' + v.s46 + '</td>';
+                            tr += '<td class="table-success text-center">' + v.s47 + '</td>';
+                            tr += '<td class="table-active text-center">' + v.s48 + '</td>';
+                            tr += '<td class="col-md-2 text-center ">'
+                            tr += '<button class="btn btn-xs btn-info" name="ViewST" ><i class="fa fa-info-circle" aria-hidden="true"></i></button>'
+                            tr += '&nbsp<button class="btn btn-xs btn-warning" name="EditSt" ><i class="fa fa-edit"></i></button>'
+                            tr += '</td>';
+                            tr += '</tr>';
+
+                            $('#tbDsST').append(tr);
+
+                        });
+
+                        if (data.numPages > 1) {
+                            $('#phanTrangST').empty();
+                            for (i = 1; i <= data.numPages; i++) {
+                                let li = '<li class="page-item" id="' + i + '" ><a class="page-link" href="#">' + i + '</a></li>'
+                                $('#phanTrangST').append(li);
+                            }
+                            let li = $('#phanTrangST li#' + page + '');
+                            console.log('li duoc click', $(li).text());
+                            $(li).addClass('active');
+
+
+                        }
+                    } else {
+                        if (search.length > 0) {
+                            alertify.error('Không có kết quả nào cho từ khóa "' + search + '"');
+                        } else {
+                            alertify.error(data.Message);
+                        }
+
+                        $('#tbDsST').empty();
+
+                        $('#phanTrangST').empty();
+
+
+                    }
+                }
+            });
+        };
+
+
+        $('#btnSearchST').click(function () {
+            page = 1;
+            search = $('#txtSearchST').val();
+            $('#phanTrangST').empty();
+            loadDSST(search, page);
+
+        });
+        $('#phanTrangST').on("click", "li", function (e) {
+            e.preventDefault();
+            page = $(this).text();
+            loadDSST(search, page);
+
+        });
+
+
+
+        $(document).on('click', "button[name='EditSt']", function () {
+            let stid = $(this).closest('tr').attr('id');
+            ChiTietST(stid);
+
+            $('#btnSubmitST').show();
+
+
+            $('#btnSubmitST').prop('disabled', false);
+            $('#S38,#S39,#S39,#S40,#S41,#S42,#S43,#S44,#S45,#S46,#S47,#S48').prop('readonly', false);
+            $('#STID,#shoesname').prop('readonly', true);
+            $('#lbSTID,#lbshoesname,#lbS38,#lbS39,#lbS40,#lbS41,#lbS42,#lbS43,#lbS44,#lbS45,#lbS46,#lbS47,#lbS48').show();
+            $('#STID,#shoesname,#S38,#S39,#S40,#S41,#S42,#S43,#S44,#S45,#S46,#S47,#S48').show();
+
+            $('#ipST').val(stid);
+
+
+
+            $('#modalTitle').text('Sửa bảng size');
+            t.resetForm();
+            $('#modalST').modal();
+
+
+        });
+        $(document).on('click', "button[name='ViewST']", function () {
+            let stid = $(this).closest('tr').attr('id');
+            ChiTietST(stid);
+
+            $('#STID,#shoesname,#S38,#S39,#S39,#S40,#S41,#S42,#S43,#S44,#S45,#S46,#S47,#S48').prop('readonly', true);
+            $('#STID,#shoesname,#S38,#S39,#S40,#S41,#S42,#S43,#S44,#S45,#S46,#S47,#S48').show();
+            $('#lbSTID,#lbshoesname,#lbS38,#lbS39,#lbS40,#lbS41,#lbS42,#lbS43,#lbS44,#lbS45,#lbS46,#lbS47,#lbS48').show();
+
+            $('#btnSubmitST').hide();
+            $('#modalTitle').text('Xem chi tiết bảng size');
+            $('#modalST').modal();
+
+
+        });
+
+        function ChiTietST(stid) {
+            $.ajax({
+                url: '/Admin/SizeTables/GetSizeTableBySizeId',
+                type: 'get',
+                data: {
+                    stid: stid
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        console.log(data);
+                        $('#STID').val(data.data.stid);
+                        $('#shoesname').val(data.data.shoename);
+                        $('#S38').val(data.data.s38);
+                        $('#S39').val(data.data.s39);
+                        $('#S40').val(data.data.s40);
+                        $('#S41').val(data.data.s41);
+                        $('#S42').val(data.data.s42);
+                        $('#S43').val(data.data.s43);
+                        $('#S44').val(data.data.s44);
+                        $('#S45').val(data.data.s45);
+                        $('#S46').val(data.data.s46);
+                        $('#S47').val(data.data.s47);
+                        $('#S48').val(data.data.s48);
+
+                    } else {
+                        alertify.error(data.Message);
+                    }
+                }
+            })
+        };
+
+        $('#btnSubmitST').click(function () {
+            let stid = $('#STID').val();
+            let s38 = $('#S38').val();
+            let s39 = $('#S39').val();
+            let s40 = $('#S40').val();
+            let s41 = $('#S41').val();
+            let s42 = $('#S42').val();
+            let s43 = $('#S43').val();
+            let s44 = $('#S44').val();
+            let s45 = $('#S45').val();
+            let s46 = $('#S46').val();
+            let s47 = $('#S47').val();
+            let s48 = $('#S48').val();
+
+
+
+            let ID = $('#ipST').val().trim();
+
+
+            if (confirm('Bạn thực sự muốn chỉnh sửa bảng size này này?')) {
+                $.ajax({
+                    url: '/Admin/SizeTables/EditSizeTable',
+                    type: 'post',
+
+                    data: {
+                        stid: stid,
+                        s38: s38,
+                        s39: s39,
+                        s40: s40,
+                        s41: s41,
+                        s42: s42,
+                        s43: s43,
+                        s44: s44,
+                        s45: s45,
+                        s46: s46,
+                        s47: s47,
+                        s48: s48
+
+                    },
+
+                    success: function (data) {
+                        if (data.status == 200) {
+
+                            $('#modalST').modal('hide');
+                            alertify.success(data.Message);
+                            loadDSST(search, page);
+
+                        } else {
+                            alertify.error(data.Message);
+                            return;
+                        }
+                    },
+                    error: function () {
+                        alertify.error(data.Message);
+                        return;
+                    }
+
+                })
+            } else {
+                return;
+            }
+
+
+
+        });
+
+
+
+
+
+        function ConvertJsonDateString(jsonDate) {
+            var shortDate = null;
+            if (jsonDate) {
+                var regex = /-?\d+/;
+                var matches = regex.exec(jsonDate);
+                var dt = new Date(parseInt(matches[0]));
+                var month = dt.getMonth() + 1;
+                var monthString = month > 9 ? month : '0' + month;
+                var day = dt.getDate();
+                var dayString = day > 9 ? day : '0' + day;
+                var year = dt.getFullYear();
+
+                shortDate = dayString + '/' + monthString + '/' + year;
+            }
+            return shortDate;
+        };
+        $('#btnUploadlogo').click(function () {
+            $('#pictureUpload1').attr('src', "");
+            $('#fileUploadlogo').trigger('click');
+        });
+
+        $('#fileUploadlogo').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUploadlogo').get(0);
+
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
+
+                $.ajax(
+                    {
+                        type: 'post',
+                        url: '/Admin/Shoes/ProcessUpload',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (data) {
+                            $('#pictureUpload1').attr('src', data.data);
+                            $('#pictureUpload1').show();
+                            $('#logo').val(data.data);
+
+                        },
+                        error: function (err) {
+                            alert('Error ', err.statusText);
+
+                        }
+                    });
+            }
+        });
+    </script>
+}
+
+

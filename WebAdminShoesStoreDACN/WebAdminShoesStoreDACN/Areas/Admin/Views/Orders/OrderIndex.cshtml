@@ -1,0 +1,595 @@
+﻿
+@{
+    ViewBag.Title = "OrderIndex";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header  py-3 bg-success">
+        <div class="row">
+            <h6 class="m-0 font-weight-bold text-danger col-md-2" style="text-transform:uppercase">Danh sách đơn hàng</h6>
+            <div class="form-group col-md-2">
+                <select class="form-control" id="headerStatsusId">
+                    <option value="0">Tất cả đơn hàng</option>
+                </select>
+            </div>
+            <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search col-md-3 ">
+                <div class="input-group">
+                    <input type="text" class="form-control bg-white border-0 small" placeholder="Search for..."
+                           aria-label="Search" aria-describedby="basic-addon2" id="txtSearchOrder">
+                    <div class="input-group-append">
+                        <button class="btn btn-success" type="button" id="btnSearchOrder">
+                            <i class="fas fa-search fa-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <nav aria-label="..." class="col-md-5">
+                <ul class="pagination pagination-sm" id="phanTrangOrder"></ul>
+            </nav>
+            <div class=" text-right offset-5 mb-2  ">
+                <button class="btn  btn-success" hidden id="btnAddOrder" name="Add"><i class="fas fa-plus"></i> Thêm đơn hàng mới</button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTableOrder" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="col-md-1">Mã ĐH </th>
+                        <th class="col-md-1">Tên KH</th>
+                        <th class="col-md-1">Tài khoản</th>
+                        <th class="col-md-1">Phone</th>
+                        <th class="col-md-1">Ngày ĐH</th>
+                        <th class="col-md-1">Tình trạng ĐH</th>
+                        <th class="col-md-1">Tổng tiền</th>
+                        <th class="col-md-2 ">Ghi chú</th>
+                        <th class="col-md-2"></th>
+                    </tr>
+                </thead>
+                <tbody id="tbDsOrder">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="modalOrder" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h5 class="modal-title " style="color:#fff" id="modalTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" hidden id="ipOrder" value="" />
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        <label id="lbOrderId">Mã ĐH</label>
+                        <input type="text" class="form-control" id="orderId" placeholder="Mã đơn hàng">
+                    </div>
+                    <div class="form-group col-md-5 ">
+                        <label id="lbUsername">Tên tài khoản</label>
+                        <select class="form-control" id="UserName"></select>
+
+
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label id="lbStatus">Tình trạng đơn hàng</label>
+                        <select class="form-control" id="Status"></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label id="lbcreateDate">Ngày tạo đơn</label>
+                        <div class="input-group date" data-provide="datepicker">
+                            <input type="text" class="form-control" id="createDate">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-th"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label id="lbdeliverydate">Ngày giao</label>
+                        <div class="input-group date" data-provide="datepicker">
+                            <input type="text" class="form-control" id="deliverydate">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-th"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label id="lbTotal">Tổng tiền</label>
+                        <input type="number" class="form-control" id="total" placeholder="Tổng tiền">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label id="lbPayment">Thanh toán?</label>
+                        <select class="form-control" id="payment">
+                            <option value="0">Chưa thanh toán</option>
+                            <option value="1">Đã thanh toán</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label id="lbmomo">Phương thức thanh toán</label>
+                        <select class="form-control" id="momo">
+                            <option value="0">Thanh toán khi nhận hàng</option>
+                            <option value="1">Thanh toán online</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <label id="lbHo">Họ</label>
+                        <input type="text" class="form-control" id="Ho" placeholder="Họ">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label id="lbTen">Tên</label>
+                        <input type="text" class="form-control" id="Ten" placeholder="Tên">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label id="lbPhone">Số điện thoại</label>
+                        <input type="text" class="form-control" id="phone" placeholder="Số điện thoại">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label id="lbemail">Email</label>
+                        <input type="text" class="form-control" id="email" placeholder="Email">
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label id="lbAddress">Địa chỉ</label>
+                        <textarea class="form-control" id="address" placeholder="Địa chỉ"></textarea>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label id="lbNote">Ghi chú</label>
+                        <textarea class="form-control" id="note" placeholder="Ghi chú"></textarea>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" id="btnSubmitOrder" class="btn btn-success">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bd-example-modal-lg" id="modalOrderDetails" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h5 class="modal-title " style="color:#fff" id="modalTitle">Chi tiết đơn hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="dataTableOrderDetails" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="col-md-1">Mã ĐH </th>
+                                <th class="col-md-1">Mã giày</th>
+                                <th class="col-md-2">Tên giày</th>
+                                <th class="col-md-1">Hình ảnh</th>
+                                <th class="col-md-1">Số lượng</th>
+                                <th class="col-md-1">Giá</th>
+                                <th class="col-md-1 ">Tổng tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbDsOrderDetails">
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>@*
+                    <button type="button" id="btnSubmitOrder" class="btn btn-success">Save changes</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <link href="~/Areas/Admin/ContentAdmin/datepicker/css/bootstrap-datepicker.css" rel="stylesheet" />
+    <script src="~/Areas/Admin/ContentAdmin/datepicker/js/bootstrap-datepicker.js"></script>
+
+    <script>
+        var search = "";
+        var page = 1;
+        var stid = 0;
+        var statusnamee = "";
+        $(document).ready(function () {
+        
+            LoadDSOrder(search, page, 0);
+            loadDSAccount();
+            loadDSStatus();
+
+        });
+        $('#headerStatsusId').change(function () {
+            var optionSelected = $(this).find("option:selected");
+            stid = optionSelected.val();
+            var page = 1;
+            LoadDSOrder(search, page, stid);
+        });
+
+
+        $('.datepicker').datepicker();
+
+
+        function loadDSOrderDetails(orderid) {
+            $.ajax({
+                url: '/Admin/OrderDetails/getOrderDetails',
+                type: 'get',
+                data: {
+                    orderid: orderid,
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        $('#tbDsOrderDetails').empty();
+                        console.log(data.data);
+
+                        $.each(data.data, function (k, v) {
+
+
+                            let tr = '<tr id="' + v.orderid + '">
+    ';
+    tr += '
+    <td class="col-md-1 text-center">' + (v.orderid) + '</td>';
+    tr += '
+    <td class="col-md-1 text-center">' + (v.shoeid) + '</td>';
+    tr += '
+    <td class="col-md-2">' + v.shoename + '</td>';
+    tr += '
+    <td class="col-md-1"><img src="' + v.image1 + '" class="col-md-10 mt-2" /></td>';
+    tr += '
+    <td class=" col-md-1">' + v.quantity + '</td>';
+    tr += '
+    <td class=" col-md-1">' + v.price + '</td>';
+    tr += '
+    <td class=" col-md-1">' + v.total + '</td>';
+
+    tr += '
+</tr>';
+
+                            $('#tbDsOrderDetails').append(tr);
+
+                        });
+
+                    } else {
+                        alertify.error(data.Message);
+
+                    }
+                }
+            });
+        };
+        function loadDSAccount() {
+            $.ajax({
+                url: '/Admin/Accounts/GetAllAccountForOrder',
+                type: 'get',
+                success: function (data) {
+                    if (data.status == 200) {
+                        $('#UserName').empty();
+                        console.log(data.data);
+                        $.each(data.data, function (k, v) {
+                            let op = '<option value="' + v.accountid + '">' + v.username + '</option>'
+                            $('#UserName').append(op);
+                        })
+                    }
+                }
+            });
+        };
+
+        function loadDSStatus() {
+            $.ajax({
+                url: '/Admin/Status/GetAllStatus',
+                type: 'get',
+                success: function (data) {
+                    if (data.status == 200) {
+                        $('#Status').empty();
+
+                        console.log(data.data);
+                        $.each(data.data, function (k, v) {
+                            let op = '<option value="' + v.statusid + '">' + v.statusname + '</option>'
+                            $('#Status').append(op);
+                            $('#headerStatsusId').append(op);
+                        })
+                    } else {
+                        loadDSStatus();
+                    }
+                },
+                error: function () {
+                    loadDSStatus();
+                }
+            });
+        };
+        $(document).on('click', "button[name='EditOrder']", function () {
+            let orderid = $(this).closest('tr').attr('id');
+            ChiTietOrder(orderid);
+            $('#ipOrder').val(orderid);
+            $('#lbTotal,#lbOrderId,#lbStatus,#lbdeliverydate,#lbcreateDate,#lbPayment,#lbmomo').show();
+            $('#total,#orderId,#Status,#deliverydate,#createDate,#payment,#momo').show();
+            $('#UserName,#createDate,#deliverydate,#payment,#momo').prop('disabled', true);
+            $('#orderId,#UserName,#Ten,#Ho,#email,#phone,#note,#address,#total').prop('readonly', true);
+            $('#Status').prop('disabled', false);
+            $('#btnSubmitOrder').show();
+            $('#btnSubmitOrder').prop('disabled', false);
+            $('#modalTitle').text('Xem đơn hàng ');
+            $('#modalOrder').modal();
+
+
+        });
+
+        $(document).on('click', "button[name='ViewOrder']", function () {
+            let orderid = $(this).closest('tr').attr('id');
+            ChiTietOrder(orderid);
+            $('#lbTotal,#lbOrderId,#lbStatus,#lbdeliverydate,#lbcreateDate,#lbPayment,#lbmomo').show();
+            $('#total,#orderId,#Status,#deliverydate,#createDate,#payment,#momo').show();
+            $('#UserName,#btnSubmitOrder,#createDate,#deliverydate,#Status,#payment,#momo').prop('disabled', true);
+            $('#orderId,#UserName,#Ten,#Ho,#email,#phone,#note,#address,#total').prop('readonly', true);
+            $('#btnSubmitOrder').hide();
+            $('#modalTitle').text('Xem đơn hàng ');
+            $('#modalOrder').modal();
+
+
+
+        });
+        $(document).on('click', "button[name='SeeOrder']", function () {
+            let orderid = $(this).closest('tr').attr('id');
+            loadDSOrderDetails(orderid);
+
+            $('#modalOrderDetails').modal();
+
+
+
+
+        });
+
+        function ChiTietOrder(orderid) {
+            $.ajax({
+                url: '/Admin/Orders/GetOrderByOrderId',
+                type: 'get',
+                data: {
+                    orderid: orderid
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        console.log(data);
+                        $('#orderId').val(data.data.orderid);
+                        $('#UserName').val(data.data.accountid);
+                        $('#Status').val(data.data.statusid);
+                        $('#createDate').val(ConvertJsonDateString(data.data.createdate));
+                        $('#deliverydate').val(ConvertJsonDateString(data.data.deliverydate));
+                        $('#total').val(data.data.total);
+                        $('#payment').val((data.data.payment == true ? 1 : 0));
+                        $('#momo').val((data.data.momo).length > 0 ? 1 : 0);
+                        $('#Ho').val(data.data.lastName);
+                        $('#Ten').val(data.data.firstName);
+                        $('#phone').val(data.data.phone);
+                        $('#email').val(data.data.email);
+                        $('#address').val(data.data.address);
+                        $('#note').val(data.data.note);
+
+
+                    } else {
+                        if (@GlobalVariables.roleId == 0) {
+                        window.location.href = 'http://hihi.com/Admin/Accounts/Logout'
+                        } else {
+                        window.location.href = 'http://hihi.com/Admin/Accounts/Logout'
+                        }
+
+                        }
+                        }
+                        })
+                        };
+                        function LoadDSOrder(search, page, stid) {
+                        $.ajax({
+                        url: '/Admin/Orders/GetAllOrders',
+                        type: 'get',
+                        data: {
+                        keysearch: search,
+                        trang: page,
+                        stid: stid
+
+
+                        },
+                        success: function (data) {
+                        console.log(data);
+
+                        if (data.status == 200) {
+                        $('#phanTrangOrder').empty();
+                        $('#tbDsOrder').empty();
+                        $.each(data.data, function (k, v) {
+                        let tr = '<tr id="' + v.orderid + '">
+                            ';
+                            tr += '
+                            <td class="col-md-1 text-center">' + (v.orderid) + '</td>';
+                            tr += '
+                            <td class="col-md-1">' + v.lastName + ' ' + v.firstName + '</td>';
+                            tr += '
+                            <td class="col-md-1">' + v.username + '</td>';
+                            tr += '
+                            <td class=" col-md-1">' + (v.phone) + '</td>';
+                            tr += '
+                            <td class=" col-md-1">' + ConvertJsonDateString(v.createdate) + '</td>';
+                            tr += '
+                            <td class=" col-md-1">' + v.statusname + '</td>';
+                            tr += '
+                            <td class=" col-md-1">' + v.total + '</td>';
+                            tr += '
+                            <td class=" col-md-2 "> <span class="bg-warning" style="color:#000">' + v.note + '</span></td>';
+                            tr += '
+                            <td class="col-md-2 text-center ">
+                                '
+
+                                tr += '<button class="btn btn-xs btn-danger" name="SeeOrder"><i class="fa fa-eye" aria-hidden="true"></i></i></button>'
+                                tr += '&nbsp<button class="btn btn-xs btn-info" name="ViewOrder"><i class="fa fa-info-circle" aria-hidden="true"></i></button>'
+                                if (v.statusid == 1 || v.statusid == 2 || v.statusid == 3) {
+                                tr += '&nbsp<button class="btn btn-xs btn-warning" name="EditOrder"><i class="fa fa-edit"></i></button>'
+                                }
+
+                                tr += '
+                            </td>';
+
+                            tr += '
+                        </tr>';
+
+                        $('#tbDsOrder').append(tr);
+
+                        });
+
+                        if (data.numPages > 1) {
+                        $('#phanTrangOrder').empty();
+                        for (i = 1; i <= data.numPages; i++) {
+                        let li = '<li class="page-item" id="' + i + '"><a class="page-link" href="#">' + i + '</a></li>'
+                        $('#phanTrangOrder').append(li);
+                        }
+                        let li = $('#phanTrangOrder li#' + page + '');
+                        console.log('li duoc click', $(li).text());
+                        $(li).addClass('active');
+
+
+                        }
+                        } else {
+                        alertify.error(data.Message);
+                        $('#tbDsOrder').empty();
+
+                        $('#phanTrangOrder').empty();
+
+
+                        }
+
+                        }
+
+                        });
+                        }
+                        $('#btnSearchOrder').click(function () {
+                        page = 1;
+                        search = $('#txtSearchOrder').val();
+                        $('#phanTrangOrder').empty();
+                        LoadDSOrder(search, page, stid);
+                        });
+                        $('#phanTrangOrder').on("click", "li", function (e) {
+                        e.preventDefault();
+                        page = $(this).text();
+                        LoadDSOrder(search, page, stid);
+                        });
+
+
+                        $('#btnAddOrder').click(function () {
+                        $('#lbTotal,#lbOrderId,#lbStatus,#lbdeliverydate,#lbcreateDate,#lbPayment,#lbmomo').hide();
+                        $('#total,#orderId,#Status,#deliverydate,#createDate,#payment,#momo').hide();
+                        $('#UserName,#btnSubmitOrder').prop('disabled', false);
+                        $('#UserName,#Ten,#Ho,#email,#phone,#note,#address').prop('readonly', false);
+                        $('#UserName,#Ten,#Ho,#email,#phone,#note,#address,#ipOrder').val('');
+                        $('#btnSubmitOrder').show();
+                        $('#modalTitle').text('Thêm đơn hàng mới');
+                        $('#modalOrder').modal();
+                        });
+
+
+
+                        $('#btnSubmitOrder').click(function () {
+
+                        @*let Brandid = $('#brandid').val();
+                            let Categoryid = $('#categoryId').val();
+                            let Shoename = $('#shoesName').val();
+                            let Price = $('#price').val();
+                            let Description = $('#description').val();
+                            let Shoenew = $('#shoesNew').val() == 1 ? true : false;
+                            let IImg1 = $('#img1').val().trim() == null ? null : $('#img1').val().trim().length < 1 ? null : $('#img1').val().trim();
+                            let IImg2 = $('#img2').val().trim() == null ? null : $('#img2').val().trim().length < 1 ? null : $('#img2').val().trim();
+                            let IImg3 = $('#img3').val().trim() == null ? null : $('#img3').val().trim().length < 1 ? null : $('#img3').val().trim();
+                            let IImg4 = $('#img4').val().trim() == null ? null : $('#img4').val().trim().length < 1 ? null : $('#img4').val().trim();
+                            let shoesid = $('#shoesId').val();
+                            let active = $('#statusShoes').val() == 1 ? true : false;*@
+
+                        let orderid = $('#orderId').val();
+                        let statusid = $('#Status').val();
+
+
+                        let ID = $('#ipOrder').val().trim();
+                        if (ID.length == 0) {
+
+
+                        } else {
+
+                        if (confirm('Bạn thực sự muốn chỉnh sửa đơn hàng này?')) {
+                        $.ajax({
+                        url: '/Admin/Orders/UpdateOrder',
+                        type: 'post',
+
+                        data: {
+                        orderid: orderid,
+                        statusid: statusid
+                        },
+
+                        success: function (data) {
+                        if (data.status == 200) {
+
+
+                        $('#modalOrder').modal('hide');
+
+                        page = 1;
+                        LoadDSOrder(search, page, stid);
+                        alertify.success(data.Message);
+                        } else {
+                        alertify.error(data.Message);
+                        return;
+                        }
+                        },
+                        error: function () {
+                        alertify.error(data.Message);
+                        return;
+                        }
+
+                        })
+                        } else {
+                        alertify.error('Đã xảy ra lỗi trong quá trình xử lý');
+                        return;
+                        }
+
+                        }
+
+
+                        });
+
+
+
+
+
+
+
+
+                        function ConvertJsonDateString(jsonDate) {
+                        var shortDate = null;
+                        if (jsonDate) {
+                        var regex = /-?\d+/;
+                        var matches = regex.exec(jsonDate);
+                        var dt = new Date(parseInt(matches[0]));
+                        var month = dt.getMonth() + 1;
+                        var monthString = month > 9 ? month : '0' + month;
+                        var day = dt.getDate();
+                        var dayString = day > 9 ? day : '0' + day;
+                        var year = dt.getFullYear();
+                        shortDate = monthString + '/' + dayString + '/' + year;
+                        //shortDate = dayString + '/' + monthString + '/' + year;
+                        }
+                        return shortDate;
+                        };
+                        </script>
+}

@@ -1,0 +1,793 @@
+﻿
+@{
+    ViewBag.Title = "ShoesIndex";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header  py-3 bg-success">
+        <div class="row">
+            <h6 class="m-0 font-weight-bold text-danger col-md-2" style="text-transform:uppercase">Danh sách sản phẩm</h6>
+            <div class="form-group col-md-2">
+                <select class="form-control" id="headerbrandid">
+                    <option value="0">Tất cả sản phẩm</option>
+                </select>
+            </div>
+            <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search col-md-3 ">
+                <div class="input-group">
+                    <input type="text" class="form-control bg-white border-0 small" placeholder="Search for..."
+                           aria-label="Search" aria-describedby="basic-addon2" id="txtSearchShoes">
+                    <div class="input-group-append">
+                        <button class="btn btn-success" type="button" id="btnSearchShoes">
+                            <i class="fas fa-search fa-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <nav aria-label="..." class="col-md-5">
+                <ul class="pagination pagination-sm" id="phanTrangShoes"></ul>
+            </nav>
+            <div class=" text-right offset-5 mb-2  ">
+                <button class="btn  btn-success" id="btnAddShoes" name="Add"><i class="fas fa-plus"></i> Thêm Mới</button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTableShoes" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="col-md-1">Mã </th>
+                        <th class="col-md-2">Tên sản phẩm</th>
+                        <th class="col-md-1">Giá</th>
+                        <th class="col-md-2 ">Status</th>
+                        <th class="col-md-2">Hãng</th>
+                        <th class="col-md-1">Hình ảnh</th>
+                        <th class="col-md-2"></th>
+
+                    </tr>
+                </thead>
+                <tbody id="tbDsShoes">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="modalShoes" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h5 class="modal-title " style="color:#fff" id="modalTitle"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" hidden id="ipShoes" value="" />
+                <form id="form-shoes">
+
+
+                    <div class="row">
+                        <div class="form-group col-md-3">
+                            <label id="lbShoesId">Mã SP</label>
+                            <input type="text" class="form-control" id="shoesId" placeholder="Mã sản phẩm">
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label id="lbBrandId">Hãng</label>
+                            <select class="form-control" id="brandid"></select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label id="lbCategoryId">Loại giày</label>
+                            <select class="form-control" id="categoryId"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label>Tên sản phẩm</label>
+                            <input type="text" class="form-control" id="shoesName" name="shoesname" placeholder="Tên sản phẩm">
+
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label id="lbPrice">Giá</label>
+                            <input type="number" class="form-control" id="price" name="price" placeholder="Giá">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Mô tả</label>
+                        <textarea class="form-control" id="description" name="description" placeholder="Mô tả sản phẩm"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label id="lbStock">Số lượng tồn kho</label>
+                            <input type="number" class="form-control" id="stock" placeholder="Mã sản phẩm">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label id="lbpurchased">Số lượng đã bán</label>
+                            <input type="number" class="form-control" id="purchased" placeholder="Giá">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-7">
+                            <label>Trạng thái sản phẩm (Đang kinh doanh/ Ngừng kinh doanh)</label>
+                            <select class="form-control" id="statusShoes">
+                                <option value="1">Kinh doanh</option>
+                                <option value="0">Ngừng kinh doanh</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-5">
+                            <span> </span>
+                            <label>Tình trạng sp Mới/Cũ</label>
+                            <select class="form-control" id="shoesNew">
+                                <option value="1">New</option>
+                                <option value="0">Old</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label id="lbCreateDate">Ngày tạo</label>
+                            <input type="text" class="form-control" id="createDate" placeholder="Tên sản phẩm">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label id="lbUpdateDate">Ngày sửa</label>
+                            <input type="email" class="form-control" id="updateDate" placeholder="Tên sản phẩm">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label id="lbCreateDate">Người tạo</label>
+                            <input type="email" class="form-control" id="createby" placeholder="Tên sản phẩm">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label id="lbUpdateDate">Người sửa</label>
+                            <input type="email" class="form-control" id="updateby" placeholder="Tên sản phẩm">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ảnh</label>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <input type="button" id="btnUpload1" value="Chọn ảnh 1" class="btn btn-success " />
+                                <input type="text" class="form-control" id="img1" hidden>
+                                <input type="file" name="fileUpload" id="fileUpload1" accept="image/*" style="display:none;" />
+                                <img src="" id="pictureUpload1" class="col-md-12 mt-2" />
+                            </div>
+                            <div class="col-md-3">
+                                <input type="button" id="btnUpload2" value="Chọn ảnh 2" class="btn btn-success" />
+                                <input type="text" class="form-control" id="img2" hidden>
+                                <input type="file" name="fileUpload" id="fileUpload2" accept="image/*" style="display:none;" />
+                                <img src="" id="pictureUpload2" class="col-md-12 mt-2" />
+                            </div>
+                            <div class="col-md-3">
+                                <input type="button" id="btnUpload3" value="Chọn ảnh 3" class="btn btn-success" />
+                                <input type="text" class="form-control" id="img3" hidden>
+                                <input type="file" name="fileUpload" id="fileUpload3" accept="image/*" style="display:none;" />
+                                <img src="" id="pictureUpload3" class="col-md-12 mt-2" />
+                            </div>
+                            <div class="col-md-3">
+                                <input type="button" id="btnUpload4" value="Chọn ảnh 4" class="btn btn-success" />
+                                <input type="text" class="form-control" id="img4" hidden>
+                                <input type="file" name="fileUpload" id="fileUpload4" accept="image/*" style="display:none;" />
+                                <img src="" id="pictureUpload4" class="col-md-12 mt-2" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnDisable" class="btn btn-warning">Disable</button>
+                <button type="button" id="btnClose" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" id="btnSubmitShoes" class="btn btn-success">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        var search = "";
+        var page = 1;
+        var msg = "";
+        var u = 0;
+        let brandid = 0;
+        $(document).ready(function () {
+            loadDSBrand();
+            LoadDSShoes(search, page, 0);
+
+            loadDScategory('');
+        });
+        var t = $('#form-shoes').validate({
+            rules: {
+                'shoesname': {
+                    required: true,
+                    minlength: 2
+
+                },
+                'price': {
+                    required: true,
+                    number: true,
+                    min:1
+
+                },
+                'description': {
+                    required: true,
+                    minlength: 10
+
+                },
+            }, messages: {
+                @*'shoesname': {
+                    required: 'Bạn chưa nhập tên sản phẩm',
+                    minlength: 'Tên sản phẩm phải dài ít nhất 2 ký tự',
+
+                }, 'price': {
+                    required: 'Bạn chưa nhập giá',
+                    number: 'Vui lòng nhập giá sản phẩm dưới dạng giá trị số',
+                    min: 'Giá phải lớn hơn 0$',
+                    
+                },
+                'description': {
+                    required: 'Bạn chưa nhập mô tả',
+                    minlength: 'Mô tả phải dài ít nhất 10 ký tự',
+
+                }*@
+
+            }
+        });
+
+        $('#headerbrandid').change(function () {
+            var optionSelected = $(this).find("option:selected");
+            brandid = optionSelected.val();
+            var page = 1;
+            LoadDSShoes(search, page, brandid);
+        });
+
+        function loadDSBrand() {
+            $.ajax({
+                url: '/Admin/Brands/GetAllBrand',
+                type: 'get',
+                success: function (data) {
+                    if (data.status == 200) {
+                        console.log(data.data);
+                        $.each(data.data, function (k, v) {
+                            let op = '<option value="' + v.brandid + '">' + v.brandname + '</option>'
+                            $('#brandid').append(op);
+                            $('#headerbrandid').append(op);
+                        })
+                    }
+                    else {
+                        loadDSBrand();
+                    }
+                },
+                error: function () {
+                    loadDSBrand();
+                }
+            });
+        };
+        function loadDScategory(search) {
+            $.ajax({
+                url: '/Admin/Categorys/GetAllCategory',
+                type: 'get',
+                data: {
+                    keysearch: search,
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        console.log(data.data);
+                        $.each(data.data, function (k, v) {
+                            let op = '<option value="' + v.categoryid + '">' + v.categoryname + '</option>'
+                            $('#categoryId').append(op);
+                        })
+                    }
+                    else {
+                        loadDScategory();
+                    }
+                },
+                error: function () {
+                    loadDScategory();
+                }
+            });
+        };
+
+        $('#btnSearchShoes').click(function () {
+            page = 1;
+            search = $('#txtSearchShoes').val();
+            $('#phanTrangShoes').empty();
+            LoadDSShoes(search, page, brandid);
+        });
+        $('#phanTrangShoes').on("click", "li", function (e) {
+            e.preventDefault();
+            page = $(this).text();
+            LoadDSShoes(search, page, brandid);
+        });
+        $('#btnDisable').click(function () {
+            let shoesid = $('#shoesId').val();
+            if (confirm('Bạn thực sự muốn ngừng kinh doanh sản phẩm này?')) {
+                $.ajax({
+                    url: '/Admin/Shoes/InactiveShoes',
+                    type: 'post',
+                    data: {
+                        shoesid: shoesid,
+                    },
+                    success: function (data) {
+                        if (data.status == 200) {
+                            $('#modalShoes').modal('hide');
+                            LoadDSShoes(search, page, brandid);
+                            alertify.success(data.Message);
+                        } else {
+                            alertify.error(data.Message);
+                            return;
+                        }
+                    },
+                    error: function () {
+                        alertify.error(data.Message);
+                        return;
+                    }
+                })
+            } else {
+                return;
+            }
+        });
+
+        $('#btnAddShoes').click(function () {
+            $('#createDate,#updateDate,#createby,#updateby,#lbCreateDate,#lbUpdateDate,#lbCreateDate,#lbUpdateDate,#purchased,#stock,#lbpurchased,#lbStock').hide();
+            $('#brandid,#categoryId,#statusShoes,#shoesNew').prop('disabled', false);
+            $('#shoesName,#price,#description,#img1,#img2,#img3,#img4').prop('readonly', false);
+            $('#shoesName,#price,#description,#stock,#purchased,#img1,#img2,#img3,#img4,#brandid,#categoryId,#statusShoes,#shoesNew,#ipShoes').val('');
+            $('#pictureUpload1,#pictureUpload2,#pictureUpload3,#pictureUpload4').attr('src', "");
+            $('#btnUpload1,#btnUpload2,#btnUpload3,#btnUpload4').prop('disabled', false);
+            $('#pictureUpload1,#pictureUpload2,#pictureUpload3,#pictureUpload4').hide();
+            $('#btnSubmitShoes').show();
+            $('#btnDisable,#shoesId,#lbShoesId').hide();
+            $('#pictureUpload').hide();
+            $('#modalTitle').text('Thêm sản phẩm mới');
+            t.resetForm();
+            $('#modalShoes').modal();
+        });
+
+
+        function ChiTietShoes(shoesId) {
+            $.ajax({
+                url: '/Admin/Shoes/GetShoesByShoesId',
+                type: 'get',
+                data: {
+                    shoesId: shoesId
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        $('#shoesId').val(data.data.shoeid);
+                        $('#brandid').val(data.data.brandid);
+                        $('#categoryId').val(data.data.categoryid);
+                        $('#shoesName').val(data.data.shoename);
+                        $('#price').val(data.data.price);
+                        $('#description').val(data.data.description);
+                        $('#stock').val(data.data.stock);
+                        $('#purchased').val(data.data.purchased);
+                        $('#statusShoes').val(data.data.active==true?1:0);
+                        $('#shoesNew').val(data.data.shoenew==true?1:0);
+                        $('#createDate').val(ConvertJsonDateString(data.data.createdate));
+                        $('#updateDate').val(ConvertJsonDateString(data.data.dateupdate));
+                        $('#createby').val(data.data.createByA);
+                        $('#updateby').val(data.data.updateByA);
+                        $('#pictureUpload1,#pictureUpload2,#pictureUpload3,#pictureUpload4').show();
+                        $('#pictureUpload1').attr('src', data.data.image1);
+                        $('#pictureUpload2').attr('src', data.data.image2 == null ? "" : data.data.image2);
+                        $('#pictureUpload3').attr('src', data.data.image3 == null ? "" : data.data.image3);
+                        $('#pictureUpload4').attr('src', data.data.image4 == null ? "" : data.data.image4);
+                        $('#img1').val(data.data.image1);
+                        $('#img2').val(data.data.image2 == null ? "" : data.data.image2);
+                        $('#img3').val(data.data.image3 == null ? "" : data.data.image3);
+                        $('#img4').val(data.data.image4 == null ? "" : data.data.image4);
+                        u = $('#statusShoes').val(data.data.active == true ? 1 : 0);
+
+                    } else {
+                        alertify.error(data.Message);
+                    }
+                }
+            })
+        };
+
+        $('#btnSubmitShoes').click(function () {
+
+            let Brandid = $('#brandid').val();
+            let Categoryid = $('#categoryId').val();
+            let Shoename = $('#shoesName').val();
+            let Price = $('#price').val();
+            let Description = $('#description').val();
+            let Shoenew = $('#shoesNew').val() == 1 ? true : false;
+            let IImg1 = $('#img1').val().trim() == null ? null : $('#img1').val().trim().length < 1 ? null : $('#img1').val().trim();
+            let IImg2 = $('#img2').val().trim() == null ? null : $('#img2').val().trim().length < 1 ? null : $('#img2').val().trim();
+            let IImg3 = $('#img3').val().trim() == null ? null : $('#img3').val().trim().length < 1 ? null : $('#img3').val().trim();
+            let IImg4 = $('#img4').val().trim() == null ? null : $('#img4').val().trim().length < 1 ? null : $('#img4').val().trim();
+            let shoesid = $('#shoesId').val();
+            let active = $('#statusShoes').val() == 1 ? true : false;
+
+
+            let accountID = $('#ipShoes').val().trim();
+            if (accountID.length == 0) {
+                $.ajax({
+                    url: '/Admin/Shoes/AddShoes',
+                    type: 'post',
+                    data: {
+                        Brandid: Brandid,
+                        Categoryid: Categoryid,
+                        Shoename: Shoename,
+                        Price: Price,
+                        Description: Description,
+                        Shoenew: Shoenew,
+                        IImg1: IImg1,
+                        IImg2: IImg2,
+                        IImg3: IImg3,
+                        IImg4: IImg4,
+
+                    },
+
+                    success: function (data) {
+                        if (data.status == 200) {
+
+                            LoadDSShoes(search, page, brandid);
+                            $('#pictureUpload1,#pictureUpload2,#pictureUpload3,#pictureUpload4').attr('src', "");
+                            $('#pictureUpload1,#pictureUpload2,#pictureUpload3,#pictureUpload4').hide();
+                            $('#shoesName,#price,#description,#stock,#purchased,#img1,#img2,#img3,#img4,#brandid,#categoryId,#statusShoes,#shoesNew,#ipShoes').val('');
+                            alertify.success(data.Message);
+                            // $('#shoesName,#price,#description,#stock,#purchased,#img1,#img2,#img3,#img4,#brandid,#categoryId,#statusShoes,#shoesNew').val('');
+                        } else {
+                            alertify.error(data.Message);
+                            return;
+                        }
+                    },
+                    error: function () {
+                        alertify.error(data.Message);
+                        return;
+                    }
+
+                })
+
+            } else {
+
+                if (confirm('Bạn thực sự muốn chỉnh sửa sản phẩm này?')) {
+                    $.ajax({
+                        url: '/Admin/Shoes/EditShoes',
+                        type: 'post',
+
+                        data: {
+                            shoesid: shoesid,
+                            Brandid: Brandid,
+                            Categoryid: Categoryid,
+                            Shoename: Shoename,
+                            Price: Price,
+                            Description: Description,
+                            Shoenew: Shoenew,
+                            IImg1: IImg1,
+                            IImg2: IImg2,
+                            IImg3: IImg3,
+                            IImg4: IImg4,
+                            active: active
+                        },
+
+                        success: function (data) {
+                            if (data.status == 200) {
+
+
+                                $('#modalShoes').modal('hide');
+                                alertify.success(data.Message);
+                                LoadDSShoes(search, page, brandid);
+
+                            } else {
+                                alertify.error(data.Message);
+                                return;
+                            }
+                        },
+                        error: function () {
+                            alertify.error(data.Message);
+                            return;
+                        }
+
+                    })
+                } else {
+                    return;
+                }
+
+            }
+
+
+        });
+
+        $(document).on('click', "button[name='ViewShoes']", function () {
+            let idShoes = $(this).closest('tr').attr('id');
+            ChiTietShoes(idShoes);
+            $('#brandid,#categoryId,#statusShoes,#shoesNew').prop('disabled', true);
+            $('#shoesId,#shoesName,#price,#description,#stock,#purchased,#createDate,#updateDate,#createby,#updateby,#img1,#img2,#img3,#img4').prop('readonly', true);
+            $('#lbShoesId,#brandid,#categoryId,#statusShoes,#shoesNew,#shoesId,#shoesName,#price,#description,#stock,#purchased,#createDate,#updateDate,#createby,#updateby,#img1,#img2,#img3,#img4,#lbpurchased,#lbStock,#lbCreateDate,#lbUpdateDate,#lbCreateDate,#lbUpdateDate').show();
+            $('#btnUpload1,#btnUpload2,#btnUpload3,#btnUpload4').prop('disabled', true);
+            $('#btnDisable,#btnSubmitShoes').hide();
+            $('#modalTitle').text('Xem chi tiết sản phẩm');
+            $('#modalShoes').modal();
+
+
+        });
+        $(document).on('click', "button[name='EditShoes']", function () {
+            let idShoes = $(this).closest('tr').attr('id');
+            ChiTietShoes(idShoes);
+
+            $('#brandid,#categoryId,#statusShoes,#shoesNew,#btnUpload1,#btnUpload2,#btnUpload3,#btnUpload4,#btnSubmitShoes').prop('disabled', false);
+            $('#shoesName,#price,#description,#stock,#purchased,#img1,#img2,#img3,#img4').prop('readonly', false);
+            $('#shoesId').prop('readonly', true);
+            $('#createDate,#updateDate,#createby,#updateby,#lbCreateDate,#lbUpdateDate,#lbCreateDate,#lbUpdateDate,#purchased,#stock,#lbpurchased,#lbStock').hide();
+            $('#ipShoes').val(idShoes);
+
+            $('#btnDisable,#btnSubmit,#lbShoesId,#shoesId,#btnSubmitShoes').show();
+
+
+            $('#modalTitle').text('Sửa sản phẩm');
+            t.resetForm();
+            $('#modalShoes').modal();
+
+
+        });
+
+
+
+
+        function LoadDSShoes(search, page, brandid) {
+            $.ajax({
+                url: '/Admin/Shoes/GetAllShoes',
+                type: 'get',
+                data: {
+                    keysearch: search,
+                    trang: page,
+                    brandid: brandid,
+
+
+                },
+                success: function (data) {
+                    console.log(data);
+
+                    if (data.status == 200) {
+                        $('#tbDsShoes').empty();
+                        $('#phanTrangShoes').empty();
+                        $.each(data.data, function (k, v) {
+                            let tr = '<tr id="' + v.shoeid + '">';
+                            tr += '<td class="col-md-1 text-center">' + (v.shoeid) + '</td>';
+                            tr += '<td class="col-md-2">' + v.shoename + '</td>';
+                            tr += '<td class="col-md-1">' + v.price + '<span > $</span></td>';
+                            if (v.active == true) {
+                                tr += '<td class=" col-md-2 text-success">' + (v.active == true ? 'Đang kinh doanh' : 'Ngừng kinh doanh') + '</td>';
+                            } else {
+                                tr += '<td class=" col-md-2 text-danger">' + (v.active == true ? 'Đang kinh doanh' : 'Ngừng kinh doanh') + '</td>';
+                            }
+                            //tr += '<td class=" col-md-2 text-danger">' + (v.active == true ? 'Đang kinh doanh' : 'Ngừng kinh doanh') + '</td>';
+
+                            tr += '<td class=" col-md-2">' + v.brandname + '</td>';
+                            tr += '<td class=" col-md-1"><img class=" col-md-8" src="' + v.image1 + '"/></td>';
+
+
+                            tr += '<td class="col-md-2 text-center ">'
+
+
+                            tr += '<button class="btn btn-xs btn-info" name="ViewShoes" ><i class="fa fa-info-circle" aria-hidden="true"></i></button>'
+                            tr += '&nbsp<button class="btn btn-xs btn-warning" name="EditShoes" ><i class="fa fa-edit"></i></button>'
+                            @*tr += '&nbsp<button class="btn btn-xs btn-danger "  name="Delete" ><i class="fa fa-trash" aria-hidden="true"></i></button>'
+                            *@tr += '</td>';
+
+                            tr += '</tr>';
+
+                            $('#tbDsShoes').append(tr);
+
+                        });
+
+                        if (data.numPages >1) {
+                            $('#phanTrangShoes').empty();
+                            for (i = 1; i <= data.numPages; i++) {
+                                let li = '<li class="page-item" id="'+i+'" ><a class="page-link" href="#">'+i+'</a></li>'
+                                $('#phanTrangShoes').append(li);
+                            }
+                            let li = $('#phanTrangShoes li#' + page + '');
+                            console.log('li duoc click', $(li).text());
+                            $(li).addClass('active');
+
+
+                        }
+                    } else {
+                        if (search.length > 0) {
+                            alertify.error('Không có kết quả nào cho từ khóa "' + search + '"');
+                        }
+                        else {
+                            alertify.error(data.Message);
+
+                        }
+
+
+                        $('#tbDsShoes').empty();
+
+                        $('#phanTrangShoes').empty();
+
+
+                    }
+
+                }
+
+            });
+        }
+        function ConvertJsonDateString(jsonDate) {
+            var shortDate = null;
+            if (jsonDate) {
+                var regex = /-?\d+/;
+                var matches = regex.exec(jsonDate);
+                var dt = new Date(parseInt(matches[0]));
+                var month = dt.getMonth() + 1;
+                var monthString = month > 9 ? month : '0' + month;
+                var day = dt.getDate();
+                var dayString = day > 9 ? day : '0' + day;
+                var year = dt.getFullYear();
+                //shortDate = monthString + '/' + dayString + '/' + year;
+                shortDate = dayString + '/' + monthString + '/' + year;
+            }
+            return shortDate;
+        };
+        $('#btnUpload1').click(function () {
+            $('#pictureUpload1').attr('src', "");
+            $('#fileUpload1').trigger('click');
+        });
+
+        $('#fileUpload1').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUpload1').get(0);
+
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
+
+                $.ajax(
+                    {
+                        type: 'post',
+                        url: '/Admin/Shoes/ProcessUpload',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (data) {
+                            if (data.status == 200) {
+                                $('#pictureUpload1').attr('src', data.data);
+                                $('#pictureUpload1').show();
+                                $('#img1').val(data.data);
+                                alertify.success('Upload ảnh thành công');
+                            } else {
+                                alertify.error(data.Message);
+                            }
+
+                        },
+                        error: function (err) {
+                            alertify.error('Error ', 'Đã xảy ra lỗi trong quá trình xủ lý');
+
+
+                        }
+                    });
+            }
+        });
+        $('#btnUpload2').click(function () {
+            $('#fileUpload2').trigger('click');
+        });
+        $('#fileUpload2').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUpload2').get(0);
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
+
+                $.ajax(
+                    {
+                        type: 'post',
+                        url: '/Admin/Shoes/ProcessUpload',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (data) {
+                            if (data.status == 200) {
+                                $('#pictureUpload2').show();
+                                $('#pictureUpload2').attr('src', data.data);
+                                $('#img2').val(data.data);
+                                alertify.success('Upload ảnh thành công');
+                            } else {
+                                alertify.error(data.Message);
+                            }
+                        },
+                        error: function (err) {
+                            alertify.error('Error ', 'Đã xảy ra lỗi trong quá trình xủ lý');
+                        }
+                    });
+            }
+        });
+        $('#btnUpload3').click(function () {
+            $('#fileUpload3').trigger('click');
+        });
+        $('#fileUpload3').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUpload3').get(0);
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
+
+                $.ajax(
+                    {
+                        type: 'post',
+                        url: '/Admin/Shoes/ProcessUpload',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (data) {
+                            if (data.status == 200) {
+                                $('#pictureUpload3').show();
+                                $('#pictureUpload3').attr('src', data.data);
+                                $('#img3').val(data.data);
+                                alertify.success('Upload ảnh thành công');
+                            } else {
+                                alertify.error(data.Message);
+                            }
+                        },
+                        error: function (err) {
+                            alertify.error('Error ', 'Đã xảy ra lỗi trong quá trình xủ lý');
+                        }
+                    });
+            }
+        });
+        $('#btnUpload4').click(function () {
+            $('#fileUpload4').trigger('click');
+        });
+        $('#fileUpload4').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUpload4').get(0);
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
+
+                $.ajax(
+                    {
+                        type: 'post',
+                        url: '/Admin/Shoes/ProcessUpload',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (data) {
+                            if (data.status == 200) {
+                                $('#pictureUpload4').show();
+                                $('#pictureUpload4').attr('src', data.data);
+                                $('#img4').val(data.data);
+                                alertify.success('Upload ảnh thành công');
+                            } else {
+                                alertify.error(data.Message);
+                            }
+                        },
+                        error: function (err) {
+                            alertify.error('Error ', 'Đã xảy ra lỗi trong quá trình xủ lý');
+                        }
+                    });
+            }
+        });
+
+        @* $('#txtSearch').on('keypress', function (e) {
+            if (e.which == 13) {
+                $('#btnSearch').click();
+
+
+                $('#txtSearch').val(search);
+            }
+        });*@
+        @* window.location.href = '@Url.Action("hihi", "Accounts")' *@
+    </script>
+}
+@*@section upload
+    {
+        <script>
+            $(function () {
+
+            });
+
+        </script>
+    }
+*@

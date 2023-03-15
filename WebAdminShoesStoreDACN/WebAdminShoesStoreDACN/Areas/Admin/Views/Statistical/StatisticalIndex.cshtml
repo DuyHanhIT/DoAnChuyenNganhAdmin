@@ -1,0 +1,1262 @@
+﻿
+@{
+    ViewBag.Title = "StatisticalIndex";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Thống kê</h1>
+
+    @*<a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
+        </a>*@
+</div>
+
+<!-- Content Row -->
+<div class="row">
+    @*Earnings (Monthly) Card Example*@
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" id="nameTKNgay">
+                            Earnings (Ngày)
+                        </div>
+
+                        <div class=" h5 mb-0 font-weight-bold text-gray-800 col-md-6" id="TKCurrentNgay"></div>
+
+
+                        <div class="spinner-grow text-primary " id="loadTKDay" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1" id="nameTKThang">
+                            Earnings (Tháng)
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="TKCurrentThang"></div>
+                        <div class="spinner-grow text-success " id="loadTKThang" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1" id="nameTKNam">
+                            Earnings (Năm)
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="TKCurrentNam"></div>
+                        <div class="spinner-grow text-info " id="loadTKNam" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Tasks
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                </div>
+                                <div class="col">
+                                    <div class="progress progress-sm mr-2">
+                                        <div class="progress-bar bg-info" role="progressbar"
+                                             style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                             aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1" id="nameTKQuy">
+                            Earnings (Quý)
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="TKCurrentQuy"></div>
+                        <div class="spinner-grow text-warning " id="loadTKQuy" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>@*<div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Pending Requests
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+<!-- Content Row -->
+<div class=" row mb-3">
+    <div class="col-md-5 row ml-1">
+        <select class="form-control col-md-3 ml-1 " id="selectDay">
+        </select>
+        <select class="form-control col-md-3 ml-1" id="selectMonth">
+        </select>
+        <select class="form-control col-md-5 ml-1" id="selectYear">
+        </select>
+    </div>
+    <div class="dropdown no-arrow col-md-1 ">
+        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+        </a>
+
+        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+             aria-labelledby="dropdownMenuLink">
+            <div class="dropdown-header">Chọn thời gian:</div>
+            <a class="dropdown-item" id="DHNgay" href="#">Ngày</a>
+            <a class="dropdown-item" id="DHThang" href="#">Tháng</a>
+            <a class="dropdown-item" id="DHNam" href="#">Năm</a>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-header">Chọn loại thống kê:</div>
+            <a class="dropdown-item" id="TKSellnumber" href="#">Số lượng đã bán</a>
+            <a class="dropdown-item" id="TKTurnover" href="#">Doanh thu</a>
+        </div>
+    </div>
+</div>
+<div class="row">
+
+    <!-- Area Chart -->
+    <div class="col-xl-7 col-lg-7">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary" id="TKTitle">Thống kê doanh thu (các ngày trong tháng)</h6>
+                @*<select class="form-control col-md-2" id="selectTKMonth">
+                    </select>
+                    <select class="form-control col-md-3" id="selectTKYear">
+                    </select>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                             aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">Chọn thời gian:</div>
+                            <a class="dropdown-item" id="TKDay" href="#">Các ngày trong Tháng</a>
+                            <a class="dropdown-item" id="TKThang" href="#">Tháng</a>
+                            <a class="dropdown-item" id="TKNam" href="#">Năm</a>
+
+                        </div>
+                    </div>*@
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="chart-area" id="TKAreaChart">
+                    <canvas id="myAreaChart"></canvas>
+                    <div class="text-center align-items-center" id="loadTKAreaChart">
+                        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary" id="TKShoesTitle">Thống kê giày của hãng</h6>
+                <select class="form-control col-md-4" id="selectBrand">
+                </select>
+
+                @*<div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                             aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">Chọn thời gian:</div>
+                            <a class="dropdown-item" id="" href="#">Các ngày trong Tháng</a>
+                            <a class="dropdown-item" id="" href="#">Tháng</a>
+                            <a class="dropdown-item" id="" href="#">Năm</a>
+
+                        </div>
+                    </div>*@
+            </div>
+            <div class="card-body">
+                <div class="chart-bar" id="TKShoes">
+                    <canvas id="myBarChart1"></canvas>
+                    <div class="text-center align-items-center" id="loadTKBarChart1">
+                        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <!-- Pie Chart -->
+    <div class="col-xl-5 col-lg-5">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <p class="m-0 font-weight-bold text-sm-start text-primary" id="TKDH">Thống kê đơn hàng</p>
+                @*<select class="form-control col-md-2" id="selectDay">
+                    </select>
+                    <select class="form-control col-md-2" id="selectMonth">
+                    </select>
+                    <select class="form-control col-md-3" id="selectYear">
+                    </select>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                             aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">Chọn thời gian:</div>
+                            <a class="dropdown-item" id="DHNgay" href="#">Ngày</a>
+                            <a class="dropdown-item" id="DHThang" href="#">Tháng</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" id="DHNam" href="#">Năm</a>
+                        </div>
+                    </div>*@
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="chart-pie pt-4 pb-2" id="pieChart1">
+                    <canvas id="myPieChart"></canvas>
+                    <div class="text-center align-items-center" id="loadTKpieChart">
+                        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="mt-4 text-center small">
+
+                </div>
+            </div>
+        </div>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary" id="TKBrandTitle">Thống kê hãng</h6>
+
+            </div>
+            <div class="card-body">
+                <div class="chart-bar" id="TKBrand">
+                    <canvas id="myBarChart"></canvas>
+                    <div class="text-center align-items-center" id="loadTKBarChart">
+                        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@section scripts{
+
+    <script>
+        //Thống kê Order
+        var arrStatisticalOrderStatusName = new Array();
+        var arrStatisticalOrderCount = new Array();
+        //Thống kê doanh thu từng ngày trong tháng
+        var arrStatisticalDayDay = new Array();
+        var arrStatisticalDayTurnover = new Array();
+        //Thống kê doanh thu từng tháng
+        var arrStatisticalMonthMonth = new Array();
+        var arrStatisticalMonthTurnover = new Array();
+        //Thống kê doanh thu từng năm
+        var arrStatisticalYearYear = new Array();
+        var arrStatisticalYearTurnover = new Array();
+        //Thống kê hãng
+        var arrStatisticalBrandName = new Array();
+        var arrStatisticalBrand = new Array();
+        //Thống kê shoes
+        var arrStatisticalShoesName = new Array();
+        var arrStatisticalShoes = new Array();
+
+        var year = new Date().getFullYear(), month = new Date().getMonth() + 1, day = new Date().getDate();@*
+        var year2 = new Date().getFullYear(), month2 = new Date().getMonth() + 1, day2 = new Date().getDate();*@
+
+        var typeThongKe=1;
+        var typeTkBrand = 1;
+        var brandid = 1;
+        $(document).ready(function () {
+
+
+            loadYear();
+            loadMonth();
+
+            loadDay(year, month);
+            $('#selectMonth').val(month);
+
+            $('#selectYear').val(year);
+            $('#selectDay').val(day);
+            loadDSBrand();
+            loadDSStatisticalCurrentTime(1);
+            loadDSStatisticalCurrentTime(2);
+            loadDSStatisticalCurrentTime(3);
+            loadDSStatisticalCurrentTime(4);
+            Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+            Chart.defaults.global.defaultFontColor = '#858796';
+            loadDSStatisticalOrder(day, month, year, typeThongKe);
+            loadDSStatisticalMonth(month, year, typeThongKe);
+            loadTKShoes(day, month, year, typeThongKe, typeTkBrand);
+            loadTKShoes1(day, month, year, typeThongKe, brandid, typeTkBrand);
+
+
+
+        });
+        $('#selectBrand').change(function () {
+            var optionSelected = $(this).find("option:selected");
+            brandid = optionSelected.val();
+            loadTKShoes1(day, month, year, typeThongKe, brandid, typeTkBrand);
+        });
+
+        function loadDSBrand() {
+            $.ajax({
+                url: '/Admin/Brands/GetAllBrand',
+                type: 'get',
+                success: function (data) {
+                    if (data.status == 200) {
+                        console.log(data.data);
+                        $.each(data.data, function (k, v) {
+                            let op = '<option value="' + v.brandid + '">' + v.brandname + '</option>'
+
+                            $('#selectBrand').append(op);
+                        })
+                    }
+                }
+            });
+        };
+
+        //------------
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            // *     example: number_format(1234.56, 2, ',', ' ');
+            // *     return: '1 234,56'
+            number = (number + '').replace(',', '').replace(' ', '');
+            var n = !isFinite(+number) ? 0 : +number,
+                prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                s = '',
+                toFixedFix = function (n, prec) {
+                    var k = Math.pow(10, prec);
+                    return '' + Math.round(n * k) / k;
+                };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1).join('0');
+            }
+            return s.join(dec);
+        }
+        //--------------
+        function loadTKShoes(day, month, year, typeThongKe2, typeTkBrand) {
+            arrColor1 = new Array();
+            $('#loadTKBarChart').show();
+            $('#myBarChart').hide();
+            $('#myBarChart').remove();
+            $('#TKBrandMMSG').remove();
+            $.ajax({
+                url: '/Admin/Statistical/getStatisticalBrand',
+                type: 'get',
+                data: {
+                    day: day,
+                    month: month,
+                    year: year,
+                    time: typeThongKe2,
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        arrColor1 = [];
+                        $('#loadTKBarChart').hide();
+                        $('#TKBrandMMSG').remove();
+                        if (typeThongKe2 == 3) {
+                            if (typeTkBrand == 1) {
+                                arrStatisticalBrandName = [];
+                                arrStatisticalBrand = [];
+                                $('#myBarChart').remove();
+                                $('#TKBrandTitle').text('Thống kê doanh thu hãng năm ' + year);
+
+                                $('#TKBrand').append('<canvas id="myBarChart"></canvas>');
+                                $('#myBarChart').show();
+                                console.log('data', data.data);
+                                $.each(data.data, function (k, v) {
+                                    arrColor1.push(randomColor());
+                                    arrStatisticalBrandName.push(v.brandname);
+                                    arrStatisticalBrand.push(v.turnover);
+                                });
+                                BarChart(arrStatisticalBrandName, arrStatisticalBrand, arrColor1,"myBarChart");
+                            }else if (typeTkBrand == 2) {
+                                arrStatisticalBrandName = [];
+                                arrStatisticalBrand = [];
+                                $('#myBarChart').remove();
+                                $('#TKBrandTitle').text('Thống kê số lượng bán của hãng năm ' + year);
+                                $('#TKBrand').append('<canvas id="myBarChart"></canvas>');
+                                $('#myBarChart').show();
+                                console.log('data', data.data);
+                                $.each(data.data, function (k, v) {
+                                    arrColor1.push(randomColor());
+                                    arrStatisticalBrandName.push(v.brandname);
+                                    arrStatisticalBrand.push(v.sellnumber);
+                                });
+                                BarChart(arrStatisticalBrandName, arrStatisticalBrand, arrColor1, "myBarChart");
+                            }
+
+                        } else
+                            if (typeThongKe2 == 2) {
+                                arrStatisticalBrandName = [];
+                                arrStatisticalBrand = [];
+                                $('#myBarChart').remove();
+
+                                $('#TKBrand').append('<canvas id="myBarChart"></canvas>');
+                                $('#myBarChart').show();
+                                if (typeTkBrand == 1) {
+                                    $('#TKBrandTitle').text('Thống kê doanh thu hãng tháng ' + month + '/' + year);
+                                    console.log('data', data.data);
+                                    $.each(data.data, function (k, v) {
+                                        arrColor1.push(randomColor());
+                                        arrStatisticalBrandName.push(v.brandname);
+                                        arrStatisticalBrand.push(v.turnover);
+                                    });
+                                }
+                                else {
+                                    console.log('data', data.data);
+                                    $('#TKBrandTitle').text('Thống kê số lượng bán của hãng tháng ' + month + '/' + year);
+                                    $.each(data.data, function (k, v) {
+                                        arrColor1.push(randomColor());
+                                        arrStatisticalBrandName.push(v.brandname);
+                                        arrStatisticalBrand.push(v.sellnumber);
+                                    });
+                                }
+
+                                BarChart(arrStatisticalBrandName, arrStatisticalBrand, arrColor1, "myBarChart");
+
+                            }else
+                            if (typeThongKe2 == 1) {
+                                arrStatisticalBrandName = [];
+                                arrStatisticalBrand = [];
+                                $('#myBarChart').remove();
+
+                                $('#TKBrand').append('<canvas id="myBarChart"></canvas>');
+                                $('#myBarChart').show();
+                                if (typeTkBrand == 1) {
+                                    $('#TKBrandTitle').text('Thống kê doanh thu hãng ngày ' + day+'/' + month + '/' + year);
+                                    console.log('data', data.data);
+                                    $.each(data.data, function (k, v) {
+                                        arrColor1.push(randomColor());
+                                        arrStatisticalBrandName.push(v.brandname);
+                                        arrStatisticalBrand.push(v.turnover);
+                                    });
+                                }
+                                else {
+                                    console.log('data', data.data);
+                                    $('#TKBrandTitle').text('Thống kê số lượng bán của hãng tháng ' + day + '/' + month + '/' + year);
+                                    $.each(data.data, function (k, v) {
+                                        arrColor1.push(randomColor());
+                                        arrStatisticalBrandName.push(v.brandname);
+                                        arrStatisticalBrand.push(v.sellnumber);
+                                    });
+                                }
+
+                                BarChart(arrStatisticalBrandName, arrStatisticalBrand, arrColor1, "myBarChart");
+
+                            }
+
+
+                    } else {
+                        $('#loadTKBarChart').hide();
+
+                        $('#myBarChart').hide();
+
+                        $('#TKBrand').append('<div id="TKBrandMMSG"class="text-center ">' + data.Message + '</div>');
+                    }
+                }
+            });
+
+
+
+
+        }
+        function loadTKShoes1(day, month, year, typeThongKe2, brand, typeTkBrand) {
+            arrColor2 = new Array();
+            $('#loadTKBarChart1').show();
+            $('#myBarChart1').hide();
+            $('#myBarChart1').remove();
+            $('#TKShoesMMSG').remove();
+            $.ajax({
+                url: '/Admin/Statistical/getStatisticalShoes',
+                type: 'get',
+                data: {
+                    day: day,
+                    month: month,
+                    year: year,
+                    time: typeThongKe2,
+                    brand: brand,
+
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        arrColor2 = [];
+                        $('#loadTKBarChart1').hide();
+                        $('#TKShoesMMSG').remove();
+                        if (typeThongKe2 == 3) {
+                            if (typeTkBrand == 1) {
+                                arrStatisticalShoesName = [];
+                                arrStatisticalShoes = [];
+                                $('#myBarChart1').remove();
+                                $('#TKShoesTitle').text('Thống kê doanh thu giày năm ' + year);
+
+                                $('#TKShoes').append('<canvas id="myBarChart1"></canvas>');
+                                $('#myBarChart1').show();
+                                console.log('data', data.data);
+                                $.each(data.data, function (k, v) {
+                                    arrColor2.push(randomColor());
+                                    arrStatisticalShoesName.push(v.shoename);
+                                    arrStatisticalShoes.push(v.turnover);
+                                });
+                                BarChart(arrStatisticalShoesName, arrStatisticalShoes, arrColor2,"myBarChart1");
+                            }else if (typeTkBrand == 2) {
+                                arrStatisticalShoesName = [];
+                                arrStatisticalShoes = [];
+                                $('#myBarChart1').remove();
+                                $('#TKShoesTitle').text('Thống kê số lượng bán của giày năm ' + year);
+                                $('#TKShoes').append('<canvas id="myBarChart1"></canvas>');
+                                $('#myBarChart1').show();
+                                console.log('data', data.data);
+                                $.each(data.data, function (k, v) {
+                                    arrColor2.push(randomColor());
+                                    arrStatisticalShoesName.push(v.shoename);
+                                    arrStatisticalShoes.push(v.sellnumber);
+                                });
+                                BarChart(arrStatisticalShoesName, arrStatisticalShoes, arrColor2, "myBarChart1");
+                            }
+
+                        } else
+                            if (typeThongKe2 == 2) {
+                                arrStatisticalShoesName = [];
+                                arrStatisticalShoes = [];
+                                $('#myBarChart1').remove();
+
+                                $('#TKShoes').append('<canvas id="myBarChart1"></canvas>');
+                                $('#myBarChart1').show();
+                                if (typeTkBrand == 1) {
+                                    $('#TKShoesTitle').text('Thống kê doanh thu giày tháng ' + month + '/' + year);
+                                    console.log('data', data.data);
+                                    $.each(data.data, function (k, v) {
+                                        arrColor2.push(randomColor());
+                                        arrStatisticalShoesName.push(v.shoename);
+                                        arrStatisticalShoes.push(v.turnover);
+                                    });
+                                }
+                                else {
+                                    console.log('data', data.data);
+                                    $('#TKShoesTitle').text('Thống kê số lượng bán của giày tháng ' + month + '/' + year);
+                                    $.each(data.data, function (k, v) {
+                                        arrColor2.push(randomColor());
+                                        arrStatisticalShoesName.push(v.shoename);
+                                        arrStatisticalShoes.push(v.sellnumber);
+                                    });
+                                }
+
+                                BarChart(arrStatisticalShoesName, arrStatisticalShoes, arrColor2, "myBarChart1");
+
+                            }else
+                            if (typeThongKe2 == 1) {
+                                arrStatisticalShoesName = [];
+                                arrStatisticalShoes = [];
+                                $('#myBarChart1').remove();
+
+                                $('#TKShoes').append('<canvas id="myBarChart1"></canvas>');
+                                $('#myBarChart1').show();
+                                if (typeTkBrand == 1) {
+                                    $('#TKShoesTitle').text('Thống kê doanh thu giày ngày ' + day+'/' + month + '/' + year);
+                                    console.log('data', data.data);
+                                    $.each(data.data, function (k, v) {
+                                        arrColor2.push(randomColor());
+                                        arrStatisticalShoesName.push(v.shoename);
+                                        arrStatisticalShoes.push(v.turnover);
+                                    });
+                                }
+                                else {
+                                    console.log('data', data.data);
+                                    $('#TKShoesTitle').text('Thống kê số lượng bán của giày tháng ' + day + '/' + month + '/' + year);
+                                    $.each(data.data, function (k, v) {
+                                        arrColor2.push(randomColor());
+                                        arrStatisticalShoesName.push(v.shoename);
+                                        arrStatisticalShoes.push(v.sellnumber);
+                                    });
+                                }
+
+                                BarChart(arrStatisticalShoesName, arrStatisticalShoes, arrColor2, "myBarChart1");
+
+                            }
+
+
+                    } else {
+                        $('#loadTKBarChart1').hide();
+
+                        $('#myBarChart1').hide();
+
+                        $('#TKShoes').append('<div id="TKShoesMMSG"class="text-center ">' + data.Message + '</div>');
+                    }
+                }
+            });
+
+
+
+
+        }
+        $('#selectYear').change(function () {
+            var optionSelected = $(this).find("option:selected");
+            year = optionSelected.val();
+            loadDay(year, month);
+            $('#selectDay').val(day);
+            loadDSStatisticalOrder(day, month, year, typeThongKe);
+            loadTKShoes(day, month, year, typeThongKe, typeTkBrand);
+            if (typeThongKe != 3) {
+                loadDSStatisticalMonth(month, year, typeThongKe);
+
+            }
+            loadTKShoes1(day, month, year, typeThongKe, brandid, typeTkBrand);
+        });
+        $('#selectMonth').change(function () {
+            var optionSelected = $(this).find("option:selected");
+            month = optionSelected.val();
+            loadDay(year, month);
+            $('#selectDay').val(day);
+
+            loadDSStatisticalOrder(day, month, year, typeThongKe);
+            loadTKShoes(day, month, year, typeThongKe, typeTkBrand);
+            if (typeThongKe != 2) {
+                loadDSStatisticalMonth(month, year, typeThongKe);
+            }
+            loadTKShoes1(day, month, year, typeThongKe, brandid, typeTkBrand);
+        });
+        $('#selectDay').change(function () {
+            var optionSelected = $(this).find("option:selected");
+            day = optionSelected.val();
+            //loadTKShoes(day, month, year, 3, typeTkBrand);
+            loadDSStatisticalOrder(day, month, year, typeThongKe);
+            loadTKShoes(day, month, year, typeThongKe, typeTkBrand);
+            loadTKShoes1(day, month, year, typeThongKe, brandid, typeTkBrand);
+        });
+        function loadYear() {
+            $('#selectYear').empty();
+            let currentYear = new Date().getFullYear();
+            for (i = currentYear; i >= currentYear - 10; i--) {
+                let op = '<option value="' + i + '">' + i + '</option>';
+                $('#selectYear').append(op);
+
+            }
+        };
+        function loadMonth() {
+            $('#selectMonth').empty();
+            for (i = 1; i <= 12; i++) {
+                let op = '<option value="' + (i > 9 ? i : '0' + i) + '">' + (i > 9 ? i : '0' + i)+ '</option>';
+                $('#selectMonth').append(op);
+            }
+
+
+        };
+        function loadDay(year,month) {
+            let dayinmonth = new Date(year, month, 0).getDate();
+            $('#selectDay').empty();
+            for (i = 1; i <= dayinmonth; i++) {
+                let op = '<option value="' + (i > 9 ? i : '0' + i) + '">' + (i > 9 ? i : '0' + i) + '</option>';
+                $('#selectDay').append(op);
+            }
+
+
+        }
+        function loadDSStatisticalOrder(day, month, year, typeThongKe) {
+            let arrcolor = new Array();
+            $('#loadTKpieChart').show();
+            $('#myPieChart').hide();
+            $.ajax({
+                url: '/Admin/Statistical/GetStatisticalOrderList',
+                type: 'get',
+                data: {
+                    day: day,
+                    month: month,
+                    year: year,
+                    type: typeThongKe,
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        $('#loadTKpieChart').hide();
+                        $('#DHMSG').remove();
+                        arrStatisticalOrderStatusName = [];
+                        arrStatisticalOrderCount = [];
+                        arrcolor = [];
+                        console.log(data.data);
+
+                        $.each(data.data, function (k, v) {
+                            arrcolor.push(v.statusid == 1 ? '#4e73df' : v.statusid == 2 ? '#36b9cc' : v.statusid == 3 ? '#f6c23e' : v.statusid == 4 ? '#1cc88a' : '#e74a3b ' )
+                            arrStatisticalOrderStatusName.push(v.statusname);
+                            arrStatisticalOrderCount.push(v.countOrder);
+                        })
+                        $('#myPieChart').remove();
+                        $('#pieChart1').append('<canvas id="myPieChart"></canvas>');
+                        $('#myPieChart').show();
+
+                        console.log(arrStatisticalOrderStatusName);
+                        console.log(arrStatisticalOrderCount);
+                        var ctx = document.getElementById("myPieChart");
+
+                        var myPieChart = new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: arrStatisticalOrderStatusName,
+                                datasets: [{
+                                    data: arrStatisticalOrderCount,
+                                    backgroundColor: arrcolor,
+                                    hoverBackgroundColor: arrcolor,
+                                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                                }],
+                            },
+                            options: {
+                                maintainAspectRatio: false,
+                                tooltips: {
+                                    backgroundColor: "rgb(255,255,255)",
+                                    bodyFontColor: "#858796",
+                                    borderColor: '#dddfeb',
+                                    borderWidth: 1,
+                                    xPadding: 15,
+                                    yPadding: 15,
+                                    displayColors: false,
+                                    caretPadding: 10,
+                                },
+
+                                @*legend: {
+                                    display: false
+                                },*@
+                                cutoutPercentage: 80,
+                            },
+                        });
+                    } else {
+                        $('#loadTKpieChart').hide();
+                        $('#DHMSG').remove();
+                        $('#myPieChart').hide();
+                        $('#pieChart1').append('<div id="DHMSG"class="text-center ">' + data.Message + '</div>');
+
+
+                    }
+                }
+            });
+        };
+
+        function loadDSStatisticalCurrentTime(typeThongKe2) {
+            if (typeThongKe2 == 1) {
+                $('#loadTKNam').show();
+                $('#TKCurrentNam,#nameTKNam').hide();
+            }
+            if (typeThongKe2 == 2) {
+                $('#loadTKThang').show();
+                $('#nameTKThang,#TKCurrentThang').hide();
+            }
+            if (typeThongKe2 == 3) {
+                $('#loadTKDay').show();
+                $('#TKCurrentNgay,#nameTKNgay').hide();
+            }
+
+            if (typeThongKe2 == 4) {
+                $('#loadTKQuy').show();
+                $('#nameTKQuy,#TKCurrentQuy').hide();
+            }
+
+
+            $.ajax({
+
+                url: '/Admin/Statistical/getStatisticalCurrenTime',
+                type: 'get',
+                data: {
+                    type: typeThongKe2,
+                },
+
+                success: function (data) {
+                    if (data.status == 200) {
+                        if (typeThongKe2 == 1) {
+                            $('#loadTKNam').hide();
+                            $('#TKCurrentNam,#nameTKNam').show();
+                            $('#TKCurrentNam').text('$' + data.data.turnover);
+                            $('#nameTKNam').text('Earnings (Năm ' + data.data.year +' )');
+                        } else if (typeThongKe2 == 2) {
+                            $('#loadTKThang').hide();
+                            $('#nameTKThang,#TKCurrentThang').show();
+                            $('#TKCurrentThang').text('$' + data.data.turnover);
+                            $('#nameTKThang').text('Earnings (Tháng ' + data.data.month + '/' + data.data.year+' )');
+                        } else if (typeThongKe2 == 3) {
+                            $('#loadTKDay').hide();
+                            $('#TKCurrentNgay,#nameTKNgay').show();
+                            $('#TKCurrentNgay').text('$' + data.data.turnover);
+
+                            $('#nameTKNgay').text('Earnings (Ngày ' + data.data.day + '/' + data.data.month + '/' + data.data.year + ' )');
+                        } else if (typeThongKe2 == 4) {
+                            $('#loadTKQuy').hide();
+                            $('#nameTKQuy,#TKCurrentQuy').show();
+                            $('#TKCurrentQuy').text('$' + data.data.turnover);
+                            $('#nameTKQuy').text('Earnings (Quý ' + data.data.quarter + ' / ' + data.data.year+' )');
+                        }
+
+
+
+                        }
+                    else {
+                        if (typeThongKe2 == 1) {
+                            $('#loadTKNam').hide();
+                            $('#TKCurrentNam,#nameTKNam').show();
+                            $('#TKCurrentNam').text('$0');
+                        }
+                        if (typeThongKe2 == 2) {
+                            $('#loadTKThang').hide();
+                            $('#nameTKThang,#TKCurrentThang').show();
+                            $('#TKCurrentThang').text('$0');
+                        }
+                        if (typeThongKe2 == 3) {
+                            $('#loadTKDay').hide();
+                            $('#TKCurrentNgay,#nameTKNgay').show();
+                            $('#TKCurrentNgay').text('$0');
+                        }
+
+                        if (typeThongKe2 == 4) {
+                            $('#loadTKQuy').hide();
+                            $('#nameTKQuy,#TKCurrentQuy').show();
+                            $('#TKCurrentQuy').text('$0');
+                        }
+
+
+                            }
+                },
+                error: function () {
+                    loadDSStatisticalCurrentTime(typeThongKe2);
+                }
+                    })
+        };
+        $('#DHNgay').click(function () {
+            $('#TKDH').text('Thống kê đơn hàng (ngày)');
+            $('#TKTitle').text('Thống kê doanh thu (các ngày trong tháng)');
+            typeThongKe = 1;
+            $('#selectDay,#selectMonth,#selectYear').show();
+            console.log(typeThongKe);
+            $('#selectDay').val(day);
+            loadDSStatisticalOrder(day, month, year, typeThongKe);
+            loadDSStatisticalMonth(month, year, typeThongKe);
+            loadTKShoes1(day, month, year, typeThongKe, brandid, typeTkBrand);
+            loadTKShoes(day, month, year, typeThongKe, typeTkBrand);
+        });
+        $('#DHThang').click(function () {
+            $('#TKDH').text('Thống kê đơn hàng (tháng)');
+            $('#TKTitle').text('Thống kê doanh thu (tháng)');
+            typeThongKe = 2;
+            $('#selectYear,#selectMonth').show();
+            $('#selectDay').hide();
+            console.log(typeThongKe);
+            loadDSStatisticalOrder(day, month, year, typeThongKe);
+            loadDSStatisticalMonth(month, year, typeThongKe);
+            loadTKShoes(day, month, year, typeThongKe, typeTkBrand);
+            loadTKShoes1(day, month, year, typeThongKe, brandid, typeTkBrand);
+        });
+        $('#DHNam').click(function () {
+            $('#TKDH').text('Thống kê đơn hàng (năm)');
+            $('#TKTitle').text('Thống kê doanh thu (năm)');
+            typeThongKe = 3;
+            $('#selectYear').show();
+            $('#selectDay,#selectMonth').hide();
+            console.log(typeThongKe);
+            loadDSStatisticalOrder(day, month, year, typeThongKe);
+            loadDSStatisticalMonth(month, year, typeThongKe);
+            loadTKShoes(day, month, year, typeThongKe, typeTkBrand);
+            loadTKShoes1(day, month, year, typeThongKe, brandid, typeTkBrand);
+
+
+        });
+        $('#TKTurnover').click(function () {
+                //$('#TKTitle').text('Thống kê doanh thu (năm)');
+            typeTkBrand = 1;
+            loadTKShoes(day, month, year, typeThongKe, typeTkBrand);
+            loadTKShoes1(day, month, year, typeThongKe, brandid, typeTkBrand);
+
+
+        });
+        $('#TKSellnumber').click(function () {
+
+            //$('#TKTitle').text('Thống kê doanh thu (năm)');
+            typeTkBrand = 2;
+            loadTKShoes(day, month, year, typeThongKe, typeTkBrand);
+            loadTKShoes1(day, month, year, typeThongKe, brandid, typeTkBrand);
+        });
+
+        function randomColor() {
+            var back = ["#ff0000", "blue", "gray"];
+            //var rand = back[Math.floor(Math.random() * back.length)];
+            var rand = back[Math.floor(Math.random() * back.length)];
+            return rand;
+            };
+
+        function convertMonthName(month1) {
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            return monthNames[month1-1];
+        }
+        function loadDSStatisticalMonth(month, year, typeThongKe) {
+
+            $('#loadTKAreaChart').show();
+            $('#myAreaChart').hide();
+            $.ajax({
+                url: '/Admin/Statistical/getStatisticalMonth',
+                type: 'get',
+                data: {
+                    month: month,
+                    year: year,
+                    type: typeThongKe,
+                },
+                success: function (data) {
+                    if (data.status == 200) {
+                        $('#loadTKAreaChart').hide();
+                        $('#TKMMSG').remove();
+                        if (typeThongKe == 1) {
+                            arrStatisticalDayDay = [];
+                            arrStatisticalDayTurnover = [];
+                            $('#myAreaChart').remove();
+                            $('#TKAreaChart').append('<canvas id="myAreaChart"></canvas>');
+                            $('#myAreaChart').show();
+                            console.log(data.data);
+                            $.each(data.data, function (k, v) {
+                                arrStatisticalDayDay.push((v.day > 9 ? v.day : '0' + v.day) + '/' + convertMonthName(v.month));
+                                arrStatisticalDayTurnover.push(v.turnover);
+                            })
+                            AreaChart(arrStatisticalDayDay, arrStatisticalDayTurnover);
+
+                        } else
+                            if (typeThongKe == 2) {
+                                arrStatisticalMonthMonth = [];
+                                arrStatisticalMonthTurnover = [];
+                                $('#myAreaChart').remove();
+                                $('#TKAreaChart').append('<canvas id="myAreaChart"></canvas>');
+                                $('#myAreaChart').show();
+                                console.log(data.data);
+                                $.each(data.data, function (k, v) {
+                                    arrStatisticalMonthMonth.push(convertMonthName(v.month));
+                                    arrStatisticalMonthTurnover.push(v.turnover);
+                                })
+                                AreaChart(arrStatisticalMonthMonth, arrStatisticalMonthTurnover);
+
+                            } else  {
+
+
+                                arrStatisticalYearYear = [];
+                                arrStatisticalYearTurnover = [];
+                                $('#myAreaChart').remove();
+
+                                $('#TKAreaChart').append('<canvas id="myAreaChart"></canvas>');
+                                $('#myAreaChart').show();
+                                console.log(data.data);
+                                $.each(data.data, function (k, v) {
+                                    arrStatisticalYearYear.push(v.year);
+                                    arrStatisticalYearTurnover.push(v.turnover);
+                                });
+                                AreaChart(arrStatisticalYearYear, arrStatisticalYearTurnover);
+                            }
+
+
+                    } else {
+                        $('#loadTKAreaChart').hide();
+                        console.log(data.data);
+
+                        $('#TKMMSG').remove();
+                        $('#myAreaChart').hide();
+
+                        $('#TKAreaChart').append('<div id="TKMMSG"class="text-center ">' + data.Message + '</div>');
+                    }
+                }
+            });
+        };
+        function AreaChart(a, b) {
+            // Area Chart Example
+            var ctx = document.getElementById("myAreaChart");
+            var myLineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: a,//["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                    datasets: [{
+                        label: "Earnings",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(255, 0, 0, 0.05)",
+                        borderColor: "rgba(78, 115, 223, 1)",
+                        pointRadius: 2,
+                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                        pointBorderColor: "rgba(78, 115, 223, 1)",
+                        pointHoverRadius: 2,
+                        pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+                        pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                        pointHitRadius: 10,
+                        pointBorderWidth: 1,
+                        data: b,//[0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000],
+                    }],
+                },
+                options: {
+                    exportEnabled: true,
+
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            left: 10,
+                            right: 25,
+                            top: 25,
+                            bottom: 0
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            time: {
+                                unit: 'date'
+                            },
+                            gridLines: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                maxTicksLimit: 12
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                maxTicksLimit: 5,
+                                padding: 10,
+                                // Include a dollar sign in the ticks
+                                callback: function (value, index, values) {
+                                    return '$' + number_format(value);
+                                }
+                            },
+                            gridLines: {
+                                color: "rgb(234, 236, 244)",
+                                zeroLineColor: "rgb(234, 236, 244)",
+                                drawBorder: false,
+                                borderDash: [2],
+                                zeroLineBorderDash: [2]
+                            }
+                        }],
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        backgroundColor: "rgb(255,255,255)",
+                        bodyFontColor: "#858796",
+                        titleMarginBottom: 10,
+                        titleFontColor: '#6e707e',
+                        titleFontSize: 14,
+                        borderColor: '#dddfeb',
+                        borderWidth: 1,
+                        xPadding: 15,
+                        yPadding: 15,
+                        displayColors: false,
+                        intersect: false,
+                        mode: 'index',
+                        caretPadding: 10,
+                        callbacks: {
+                            label: function (tooltipItem, chart) {
+                                var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                                return datasetLabel + ': $' + number_format(tooltipItem.yLabel);
+                            }
+                        }
+                    }
+                }
+            });
+            }
+        function BarChart(a, b,c,id) {
+            // Bar Chart Example
+            var ctx = document.getElementById(id);
+            var id = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: a,
+                    datasets: [{
+                        label: typeTkBrand == 1 ? "Doanh thu" : "Đã bán",
+                        backgroundColor: c,//["#4e73df", "#ff0000"],
+                        hoverBackgroundColor: "#2e59d9",
+                        borderColor: "#4e73df",
+                        data: b,
+                    }],
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            left: 10,
+                            right: 25,
+                            top: 25,
+                            bottom: 0
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            time: {
+                                unit: 'month'
+                            },
+                            gridLines: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                maxTicksLimit: 20
+                            },
+                            maxBarThickness: 25,
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                maxTicksLimit: 5,
+                                padding: 10,
+                                // Include a dollar sign in the ticks
+                                callback: function (value, index, values) {
+                                    return typeTkBrand == 1 ? '$' + number_format(value) : number_format(value);
+                                }
+                            },
+                            gridLines: {
+                                color: "rgb(234, 236, 244)",
+                                zeroLineColor: "rgb(234, 236, 244)",
+                                drawBorder: false,
+                                borderDash: [2],
+                                zeroLineBorderDash: [2]
+                            }
+                        }],
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        titleMarginBottom: 10,
+                        titleFontColor: '#6e707e',
+                        titleFontSize: 14,
+                        backgroundColor: "rgb(255,255,255)",
+                        bodyFontColor: "#858796",
+                        borderColor: '#dddfeb',
+                        borderWidth: 1,
+                        xPadding: 15,
+                        yPadding: 15,
+                        displayColors: false,
+                        caretPadding: 10,
+                        callbacks: {
+                            label: function (tooltipItem, chart) {
+                                var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                                return typeTkBrand == 1 ? datasetLabel + ': $' + number_format(tooltipItem.yLabel) : datasetLabel + ': ' + number_format(tooltipItem.yLabel)+' Đôi giày';
+                            }
+                        }
+                    },
+                }
+            });
+        }
+
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            // *     example: number_format(1234.56, 2, ',', ' ');
+            // *     return: '1 234,56'
+            number = (number + '').replace(',', '').replace(' ', '');
+            var n = !isFinite(+number) ? 0 : +number,
+                prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                s = '',
+                toFixedFix = function (n, prec) {
+                    var k = Math.pow(10, prec);
+                    return '' + Math.round(n * k) / k;
+                };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1).join('0');
+            }
+            return s.join(dec);
+        }
+
+
+
+
+
+            // Set new default font family and font color to mimic Bootstrap's default styling
+
+    </script>
+}
